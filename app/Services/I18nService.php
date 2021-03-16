@@ -80,11 +80,15 @@ class I18nService
             foreach ($i18n as $code => $lang) {
                 if ($code != "en_us") {
                     $file = self::getFilePath($code, $env);
-                    $write_row = self::getWriteRow($i18n, $code);
+                    $write_line = self::getWriteLine($i18n, $code);
 
+                    $new_line = self::isNeedNewLine($file);
                     if ($file) {
                         $fp = fopen($file, "a+");
-                        fputcsv($fp, [$write_row]);
+                        if ($new_line) {
+                            fwrite($fp, "\n");
+                        }
+                        fwrite($fp, $write_line . "\n");
                         fclose($fp);
                     }
                 }
@@ -100,6 +104,13 @@ class I18nService
         $row[] = "";
         $row[] = "";
         return $row;
+    }
+
+    public static function isNeedNewLine(string $file): bool
+    {
+        $content = file_get_contents($file);
+        $len = strlen($content);
+        return ! ($content[$len - 1] == "\n");
     }
 
 

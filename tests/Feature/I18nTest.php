@@ -86,10 +86,34 @@ class I18nTest extends TestCase
         $i18n = $response['i18n'];
         echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
 
-
         $env = "sw";
         $response = I18nService::writeFiles($i18n, $env);
         $this->assertTrue($response);
+    }
+
+    public function test_isNeedNewLine()
+    {
+        $i18n_code = "th_th";
+        $file = I18nService::getFilePath($i18n_code);
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        $response = I18nService::isNeedNewLine($file);
+        $this->assertFalse($response);
+
+        $i18n_code = "sv_se";
+        $file = I18nService::getFilePath($i18n_code);
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        $response = I18nService::isNeedNewLine($file);
+        $this->assertTrue($response);
+
+
+//        $this->assertIsString($file);
+//        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
+//
+//        $i18n_code = "ro_ro";
+//        $file = I18nService::getFilePath($i18n_code);
+//        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+//        $this->assertIsString($file);
+//        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/eadesigndev/ro_ro/ro_RO.csv", $file);
     }
 
 //    public function test_writeLine()
