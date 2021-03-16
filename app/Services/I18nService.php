@@ -52,5 +52,55 @@ class I18nService
         return $items;
     }
 
+    public static function getFilePath(string $i18n_code, $env = "sw"): string
+    {
+        $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
+
+        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
+        if (file_exists($file)) {
+            return $file;
+        }
+
+        $file = "$sw_path/app/i18n/eadesigndev/{$i18n_code}/ro_RO.csv";
+        if (file_exists($file)) {
+            return $file;
+        }
+
+        return "";
+    }
+
+    public static function getWriteLine($i18n, $code): string
+    {
+        return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
+    }
+
+    public static function writeFiles(array $i18n_array, string $env)
+    {
+        foreach ($i18n_array as $i18n) {
+            foreach ($i18n as $code => $lang) {
+                if ($code != "en_us") {
+                    $file = self::getFilePath($code, $env);
+                    $write_row = self::getWriteRow($i18n, $code);
+
+                    if ($file) {
+                        $fp = fopen($file, "a+");
+                        fputcsv($fp, [$write_row]);
+                        fclose($fp);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public static function getWriteRow($i18n, string $code): array
+    {
+        $row[] = $i18n['en_us'];
+        $row[] = $i18n[$code];
+        $row[] = "";
+        $row[] = "";
+        return $row;
+    }
+
 
 }
