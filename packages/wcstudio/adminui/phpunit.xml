@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <server name="MAIL_DRIVER" value="array"/>
+        <server name="QUEUE_DRIVER" value="sync"/>
+        <server name="SESSION_DRIVER" value="array"/>
+
+        <server name="DB_CONNECTION" value="mysql"/>
+        <server name="DB_HOST" value="WORKSP_db"/>
+        <server name="DB_PORT" value="3306"/>
+        <server name="DB_DATABASE" value="ecmw"/>
+        <server name="DB_USERNAME" value="root"/>
+        <server name="DB_PASSWORD" value="1qaz2wsx"/>
+
+        <server name="DB_REPORT_HOST" value="WORKSP_db"/>
+        <server name="DB_REPORT_PORT" value="3306"/>
+        <server name="DB_REPORT_DATABASE" value="report"/>
+        <server name="DB_REPORT_USERNAME" value="root"/>
+        <server name="DB_REPORT_PASSWORD" value="1qaz2wsx"/>
+
+    </php>
+    <logging>
+        <log type="coverage-html" target="testResult/report/html" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-clover" target="testResult/coverage.clover.xml"/>
+        <log type="junit" target="testResult/logfile.xml"/>
+    </logging>
+</phpunit>

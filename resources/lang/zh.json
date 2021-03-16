@@ -1,0 +1,48 @@
+{
+    "login_title": "登入系統",
+    "middleware" :"註冊",
+    "signin_to_start" : "使用者登入",
+    "remember_me" : "記住我",
+    "register_a_new_membership" : "申請新會員",
+    "sign_in" : "登入",
+    "contract_notice": "這裡是 Alex CMS System \n請先透過兩步驟驗證後再登入，若你忘記密碼請使用忘記密碼功能收信後登入",
+
+    "menu_member_ctrl_table":"人員管理",
+    "menu_auth_ctrl_table":"後台權限管理",
+    "menu_auth":"Auth",
+    "menu_menu_management":"功能列表管理",
+    "menu_user_group_management":"群組權限管理",
+    "menu_group_purview_management":"群組權限列表",
+
+    "menu_company_area_table": "公司內容",
+    "menu_aboutus_ctrl_table": "關於我們",
+    "menu_aboutus_brand": "品牌形象",
+    "menu_aboutus_history": "歷史沿革",
+    "menu_aboutus_tech": "技術內容",
+    "menu_aboutus_salepoint": "展示中心",
+    "menu_knowledge_ctrl_table": "知識管理",
+    "menu_knowledge": "衛浴小百科",
+    "menu_knowledge_category" : "分類",
+
+    "menu_index_ctrl_table": "頁面內容管理",
+    "menu_content_area_table":"內容管理",
+    "menu_product_ctrl_table": "產品管理",
+    "menu_promotion_ctrl_table":"促銷管理",
+    "menu_product": "產品上稿",
+    "menu_product_theme":"主題上稿",
+    "menu_product_category": "分類上稿",
+    "menu_product_sn":"序號管理",
+    "menu_product_tag": "標章管理",
+    "menu_product_edm_upload":"上傳型錄",
+
+    "menu_customer_ctrl_table": "會員管理",
+    "menu_partner_ctrl_table":"經銷商管理",
+    "menu_customer": "會員列表",
+    "menu_customer_comment":"意見管理",
+    "menu_customer_lawcontent": "保固條款",
+    "menu_dealer":"經銷商列表",
+    "menu_dealer_address": "地址管理"
+
+
+
+}

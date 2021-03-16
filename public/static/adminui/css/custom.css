@@ -1,0 +1,262 @@
+.c-header.c-header-dark {
+    background: #f39c12;
+    border-bottom: 1px solid #636f83;
+}
+
+.c-sidebar .c-sidebar-brand, .c-sidebar .c-sidebar-header {
+    background: #e08e0b;
+}
+
+.min-card{
+    min-height: 550px;
+}
+
+.box{
+    position: relative;
+    min-height: 600px;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow:0 1px 1px rgba(0,0,0,0.1);
+}
+
+.content{
+    min-height: 600px;
+    padding: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#languageBox{
+    padding-right:15px;
+}
+
+.languageBox-btn{
+    background-color: #f39c12;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background: #aaa;
+}
+
+.full-card {
+    min-width : -webkit-fill-available;
+    /*width: fit-content;*/
+}
+
+div.dataTables_wrapper div.dataTables_length select{
+    width:50px;
+}
+
+.componentDiv{
+    margin-top: 5px;
+}
+
+.dateInput{
+    min-width: 230px;
+}
+
+#loadingPage{
+    min-width: 100%;
+    min-height: 100%;
+    position:absolute;
+    /*left:0px;*/
+    /*top: 0px;*/
+    z-index:-1;
+    background-color: #000000;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50vh;
+    opacity: 0.2;
+}
+
+#loading_time_span{
+    position: absolute;
+    right: 15px;
+}
+
+td { white-space: break-spaces; }
+
+.id_input{
+    height:auto;
+    min-width: 228px;
+    max-width: 228px;
+}
+
+.required:after {
+    content:" *";
+    color: red;
+}
+
+.grabbing * {
+    cursor: move !important; /* fallback: no `url()` support or images disabled */
+    cursor: -webkit-grabbing !important; /* Chrome 1-21, Safari 4+ */
+    cursor:    -moz-grabbing !important; /* Firefox 1.5-26 */
+    cursor:         grabbing !important; /* W3C standards syntax, should come least */
+}
+
+.sortable-ghost {
+    background-color: #fcffd1 !important;
+    border: 1px solid;
+    border-radius: .25rem;
+    border-color: rgba(0,0,21,.125);
+}
+
+.nested-item.sortable-ghost:last-child {
+    margin-left: 20px;
+}
+
+#nestedSortable > .nested-item.sortable-ghost {
+    margin-left: 0;
+    border-radius: 0;
+}
+
+.accordion {
+    cursor: pointer;
+    padding: 12px;
+    font-size: 15px;
+    transition: 0.4s;
+}
+
+.active, .accordion:hover {
+    background-color: #d5d5d5;
+}
+
+.accordion > i.fas {
+    width: 20px;
+}
+
+.accordion + .panel {
+    display: none;
+    overflow: hidden;
+}
+
+.nested-item {
+    cursor: grab;
+    padding: 12px;
+    border-top: 1px solid rgba(0, 0, 21, 0.125);
+}
+
+.first-item {
+    background-color: #f9fafb;
+}
+
+.second-item {
+    background-color: #f1f2f4;
+    padding-left: 32px;
+}
+
+.second-item > .accordion {
+    padding-left: 32px;
+}
+
+.third-item {
+    background-color: rgb(236 236 236);
+    padding-left: 52px;
+}
+
+.nested-item-left-space {
+    width: 21px;
+    display: inline-block;
+}
+
+.display-c {
+    display: contents !important;
+}
+
+.bg-cus-green {
+    background-color: #4dc375 !important;
+}
+
+/* group */
+.purview-table {
+    width: 100%;
+    border: #f1efee solid 1px;
+    border-collapse: collapse;
+}
+
+.purview-table td {
+    border: #d8dbe0;
+}
+
+.purview-table .layer1 {
+    width: 30%;
+    padding-left: 5%;
+    border-right: #d8dbe0 solid 1px;
+    vertical-align: center;
+}
+
+.purview-table .layer2 {
+    width: 200px;
+    padding-left: 5%;
+    border-right: #d8dbe0 solid 1px;
+}
+
+.purview-table .layer3 {
+    width: 60%;
+    padding-left: 5%;
+}
+
+.purview-table td{
+    white-space: nowrap;
+}
+
+.menu-row:nth-child(odd){
+    background-color: #ffffff;
+}
+
+.menu-row:nth-child(even){
+    background-color: #f1f2f4;
+}
+
+.inner-purview-table {
+    width: 100%;
+}
+
+.inner-purview-table tr {
+    border-bottom: solid #d8dbe0 1px;
+}
+
+.inner-purview-table tr:last-child {
+    border-bottom:none;
+}
+
+.purview-table caption {
+    caption-side: top;
+}
+
+.group-table td, .group-table th {
+    white-space: nowrap;
+}
+
+.group-table .fa-edit {
+    cursor: pointer;
+}
+
+.group-table .status-label {
+    cursor: pointer;
+}
+
+.overflow-scroll {
+    overflow: scroll !important;
+}
+
+.tr-vertical-align-middle td {
+    vertical-align: middle;
+}

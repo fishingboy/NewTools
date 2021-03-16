@@ -1,0 +1,36 @@
+{
+    "login_title": "Login System",
+    "middleware" :"MiddleWare",
+    "signin_to_start" : "Sign in to start your sesstion",
+    "remember_me" : "Remember Me",
+    "register_a_new_membership" : "Register a new membership",
+    "sign_in" : "Sign In",
+    "contract_notice": "If you don't have account or forget password, please contract ASUS EC.",
+
+    "en" : "English(en)",
+    "zh" : "Tradition Chinese(zh)",
+
+    "report_recevied" : "You Got A report!",
+    "report_message" : "Please open attache file read report detail.",
+    "system_user" : "Asus EC",
+
+    "menu_eu":"EU",
+    "menu_statement":"Statement",
+    "menu_statement_inbound":"Inbound",
+    "menu_statement_storage":"Storage",
+    "menu_statement_pickpack":"PickPack",
+    "menu_statement_lastmile":"Last-mile",
+    "menu_statement_return":"Return",
+    "menu_statement_dr_payment":"DR Payment",
+    "menu_logistic":"Logistic",
+    "menu_logistic_inbound":"Inbound",
+    "menu_logistic_outbound":"Outbound",
+    "menu_logistic_return":"Return",
+    "menu_mail_history":"Mail History",
+    "menu_auth_ctrl_table":"Auth control table",
+    "menu_auth":"Auth",
+    "menu_menu_management":"Menu management",
+    "menu_user_group_management":"User group management",
+    "menu_group_purview_management":"Group purview management"
+
+}

@@ -1,0 +1,39 @@
+{
+    "name": "wcstudio/tool",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Cloud Liao(廖玉雲)",
+            "email": "Cloud.Liao@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.3",
+        "orchestra/testbench": "^5.5"
+    },
+    "description": "新中台一些常用的 common function",
+    "autoload": {
+        "psr-4": {
+            "WcStudio\\Tool\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WcStudio\\Tool\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "WcStudio\\Tool\\CommonServiceProvider",
+                "WcStudio\\Tool\\MacroServiceProvider"
+            ],
+            "aliases": {
+                "NewLog": "WcStudio\\Tool\\Facades\\LogFacade",
+                "ServiceResponse": "WcStudio\\Tool\\Facades\\ServiceResponseFacade",
+                "ApiResponse": "WcStudio\\Tool\\Facades\\ApiResponseFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}

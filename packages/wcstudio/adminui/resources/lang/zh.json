@@ -1,0 +1,36 @@
+{
+    "login_title": "登入系統",
+    "middleware" :"Sign up",
+    "signin_to_start" : "使用者登入",
+    "remember_me" : "記住我",
+    "register_a_new_membership" : "申請新會員",
+    "sign_in" : "登入",
+    "contract_notice": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+
+    "en" : "英文(en)",
+    "zh" : "繁體中文(zh)",
+
+    "report_recevied" : "你收到報告",
+    "report_message" : "請打開附件查看詳情",
+    "system_user" : "Asus EC",
+
+    "menu_eu":"EU",
+    "menu_statement":"Statement",
+    "menu_statement_inbound":"Inbound",
+    "menu_statement_storage":"Storage",
+    "menu_statement_pickpack":"PickPack",
+    "menu_statement_lastmile":"Last-mile",
+    "menu_statement_return":"Return",
+    "menu_statement_dr_payment":"DR Payment",
+    "menu_logistic":"Logistic",
+    "menu_logistic_inbound":"Inbound",
+    "menu_logistic_outbound":"Outbound",
+    "menu_logistic_return":"Return",
+    "menu_mail_history":"Mail History",
+    "menu_auth_ctrl_table":"權限控管表",
+    "menu_auth":"Auth",
+    "menu_menu_management":"功能列表管理",
+    "menu_user_group_management":"群組權限管理",
+    "menu_group_purview_management":"群組權限列表"
+
+}
