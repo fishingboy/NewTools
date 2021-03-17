@@ -77,7 +77,7 @@ class I18nService
         return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
     }
 
-    public static function writeFiles(array $i18n_array, string $env)
+    public static function writeFiles(array $i18n_array, string $env): bool
     {
         foreach ($i18n_array as $i18n) {
             foreach ($i18n as $code => $lang) {
