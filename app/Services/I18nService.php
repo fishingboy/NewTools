@@ -47,6 +47,9 @@ class I18nService
     public static function trimArray(array $items): array
     {
         foreach ($items as $i=> $item) {
+            if (strpos($item, '"') !== false) {
+                exit("字串包含雙引號，要額外處理");
+            }
             $items[$i] = trim($item);
         }
         return $items;
