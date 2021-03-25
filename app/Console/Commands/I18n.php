@@ -49,7 +49,8 @@ class I18n extends Command
         $this->show_command_info($csv_file, $preview);
 
         // 取得 i18n 資料
-        $response = I18nService::getData($csv_file);
+        $i18nService = new I18nService();
+        $response = $i18nService->getData($csv_file);
         $i18n = $response['i18n'];
 
         $env = "sw";
@@ -58,7 +59,7 @@ class I18n extends Command
             echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
         } else {
             // 寫入
-            $response = I18nService::writeFiles($i18n, $env);
+            $response = $i18nService->writeFiles($i18n, $env);
             echo "匯入 i18n 完畢。\n";
         }
     }

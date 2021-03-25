@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Storage;
 
 class I18nService
 {
-    public static function getCsv(string $csv_file): string
+    public function getCsv(string $csv_file): string
     {
         return Storage::get($csv_file);
     }
 
-    public static function getData(string $csv_file)
+    public function getData(string $csv_file)
     {
         $fp = fopen("storage/app/" . $csv_file, "r");
         $raw_data = [];
@@ -44,7 +44,7 @@ class I18nService
         ];
     }
 
-    public static function trimArray(array $items): array
+    public function trimArray(array $items): array
     {
         foreach ($items as $i=> $item) {
             if (strpos($item, '"') !== false) {
@@ -55,7 +55,7 @@ class I18nService
         return $items;
     }
 
-    public static function getFilePath(string $i18n_code, $env = "sw"): string
+    public function getFilePath(string $i18n_code, $env = "sw"): string
     {
         $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
 
@@ -72,35 +72,36 @@ class I18nService
         return "";
     }
 
-    public static function getWriteLine($i18n, $code): string
+    public function getWriteLine($i18n, $code): string
     {
         return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
     }
 
-    public static function writeFiles(array $i18n_array, string $env): bool
+    public function writeFiles(array $i18n_array, string $env): bool
     {
         foreach ($i18n_array as $i18n) {
             foreach ($i18n as $code => $lang) {
-                if ($code != "en_us") {
-                    $file = self::getFilePath($code, $env);
-                    $write_line = self::getWriteLine($i18n, $code);
+                if ($code == "en_us") {
+                    continue;
+                }
+                $file = self::getFilePath($code, $env);
+                $write_line = self::getWriteLine($i18n, $code);
 
-                    $new_line = self::isNeedNewLine($file);
-                    if ($file) {
-                        $fp = fopen($file, "a+");
-                        if ($new_line) {
-                            fwrite($fp, "\n");
-                        }
-                        fwrite($fp, $write_line . "\n");
-                        fclose($fp);
+                $new_line = self::isNeedNewLine($file);
+                if ($file) {
+                    $fp = fopen($file, "a+");
+                    if ($new_line) {
+                        fwrite($fp, "\n");
                     }
+                    fwrite($fp, $write_line . "\n");
+                    fclose($fp);
                 }
             }
         }
         return true;
     }
 
-    public static function getWriteRow($i18n, string $code): array
+    public function getWriteRow($i18n, string $code): array
     {
         $row[] = $i18n['en_us'];
         $row[] = $i18n[$code];
@@ -109,7 +110,7 @@ class I18nService
         return $row;
     }
 
-    public static function isNeedNewLine(string $file): bool
+    public function isNeedNewLine(string $file): bool
     {
         $content = file_get_contents($file);
         $len = strlen($content);
