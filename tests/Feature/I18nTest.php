@@ -128,4 +128,40 @@ class I18nTest extends TestCase
         $this->assertTrue($response);
         fclose($fp);
     }
+
+    public function test_isNeedWriteFile_true()
+    {
+        $i18nService = new I18nService();
+        $i18n_key = "Hello World";
+
+        // 寫檔案
+        $fp = tmpfile();
+        fwrite($fp, '"abc123","abc123",,');
+        $file = stream_get_meta_data($fp)['uri'];
+
+        // 判斷需不需要新行
+        $response = $i18nService->isNeedWriteFile($file, $i18n_key);
+        $this->assertTrue($response);
+
+        // 關閉並刪除檔案 tmp 檔
+        fclose($fp);
+    }
+
+    public function test_isNeedWriteFile_false()
+    {
+        $i18nService = new I18nService();
+        $i18n_key = "Hello World";
+
+        // 寫檔案
+        $fp = tmpfile();
+        fwrite($fp, '"Hello World","哈囉世界",,');
+        $file = stream_get_meta_data($fp)['uri'];
+
+        // 判斷需不需要新行
+        $response = $i18nService->isNeedWriteFile($file, $i18n_key);
+        $this->assertFalse($response);
+
+        // 關閉並刪除檔案 tmp 檔
+        fclose($fp);
+    }
 }

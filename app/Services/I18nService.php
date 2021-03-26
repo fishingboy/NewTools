@@ -81,22 +81,35 @@ class I18nService
     public function writeFiles(array $i18n_array, string $env): bool
     {
         foreach ($i18n_array as $i18n) {
+            $i18n_key = $i18n['en_us'];
+            echo "i18n key : `$i18n_key`\n\n";
             foreach ($i18n as $code => $lang) {
                 if ($code == "en_us") {
                     continue;
                 }
-                $file = $this->getFilePath($code, $env);
-                $write_line = $this->getWriteLine($i18n, $code);
 
-                $new_line = $this->isNeedNewLine($file);
-                if ($file) {
-                    $fp = fopen($file, "a+");
-                    if ($new_line) {
-                        fwrite($fp, "\n");
-                    }
-                    fwrite($fp, $write_line . "\n");
-                    fclose($fp);
+                $file = $this->getFilePath($code, $env);
+                if ( ! $file) {
+                    echo "找不到檔案 [{$file}]，不需寫入!!\n";
+                    continue;
                 }
+
+                if ( ! $this->isNeedWriteFile($file, $i18n_key)) {
+                    echo "i18n_key 已存在 [{$code}]，不需寫入!!\n";
+                    continue;
+                }
+
+                $write_line = $this->getWriteLine($i18n, $code);
+                $new_line = $this->isNeedNewLine($file);
+
+                $fp = fopen($file, "a+");
+                if ($new_line) {
+                    fwrite($fp, "\n");
+                }
+                fwrite($fp, $write_line . "\n");
+                fclose($fp);
+
+                echo "i18n_key 寫入 [{$code}]完成!!\n";
             }
         }
         return true;
@@ -116,5 +129,11 @@ class I18nService
         $content = file_get_contents($file);
         $len = strlen($content);
         return ! ($content[$len - 1] == "\n");
+    }
+
+    public function isNeedWriteFile($file, string $i18n_key): bool
+    {
+        $content = file_get_contents($file);
+        return (strpos($content, "\"$i18n_key\",") === false);
     }
 }
