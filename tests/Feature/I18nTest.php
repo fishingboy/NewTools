@@ -99,26 +99,33 @@ class I18nTest extends TestCase
         $this->assertTrue($response);
     }
 
-    public function test_isNeedNewLine()
+    public function test_isNeedNewLine_false()
     {
         $i18nService = new I18nService();
 
         // 寫檔案
-        $file = "/tmp/have_new_line.txt";
-        $fp = fopen($file, "w");
+        $fp = tmpfile();
         fwrite($fp, "aaa123\n");
-        fclose($fp);
+        $file = stream_get_meta_data($fp)['uri'];
 
+        // 判斷需不需要新行
         $response = $i18nService->isNeedNewLine($file);
         $this->assertFalse($response);
+        fclose($fp);
+    }
+
+    public function test_isNeedNewLine_true()
+    {
+        $i18nService = new I18nService();
 
         // 寫檔案
-        $file = "/tmp/no_have_new_line.txt";
-        $fp = fopen($file, "w");
-        fwrite($fp, "bbb456");
-        fclose($fp);
+        $fp = tmpfile();
+        fwrite($fp, "abc123");
+        $file = stream_get_meta_data($fp)['uri'];
 
+        // 判斷需不需要新行
         $response = $i18nService->isNeedNewLine($file);
         $this->assertTrue($response);
+        fclose($fp);
     }
 }

@@ -77,6 +77,7 @@ class I18nService
         return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
     }
 
+    // @todo: 看測試要怎麼寫才不會真的去寫檔案
     public function writeFiles(array $i18n_array, string $env): bool
     {
         foreach ($i18n_array as $i18n) {
