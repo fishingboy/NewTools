@@ -11,7 +11,7 @@ class I18nService
         return Storage::get($csv_file);
     }
 
-    public function getData(string $csv_file)
+    public function getData(string $csv_file): array
     {
         $fp = fopen("storage/app/" . $csv_file, "r");
         $raw_data = [];
@@ -23,7 +23,7 @@ class I18nService
                 $code = $line;
             }
 
-            $line = self::trimArray($line);
+            $line = $this->trimArray($line);
 
             if ($line_no > 2) {
                 $i18n_row = [];
@@ -84,10 +84,10 @@ class I18nService
                 if ($code == "en_us") {
                     continue;
                 }
-                $file = self::getFilePath($code, $env);
-                $write_line = self::getWriteLine($i18n, $code);
+                $file = $this->getFilePath($code, $env);
+                $write_line = $this->getWriteLine($i18n, $code);
 
-                $new_line = self::isNeedNewLine($file);
+                $new_line = $this->isNeedNewLine($file);
                 if ($file) {
                     $fp = fopen($file, "a+");
                     if ($new_line) {
@@ -116,6 +116,4 @@ class I18nService
         $len = strlen($content);
         return ! ($content[$len - 1] == "\n");
     }
-
-
 }

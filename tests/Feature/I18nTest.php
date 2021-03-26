@@ -102,15 +102,22 @@ class I18nTest extends TestCase
     public function test_isNeedNewLine()
     {
         $i18nService = new I18nService();
-        $i18n_code = "th_th";
-        $file = $i18nService->getFilePath($i18n_code);
-        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+
+        // 寫檔案
+        $file = "/tmp/have_new_line.txt";
+        $fp = fopen($file, "w");
+        fwrite($fp, "aaa123\n");
+        fclose($fp);
+
         $response = $i18nService->isNeedNewLine($file);
         $this->assertFalse($response);
 
-        $i18n_code = "sv_se";
-        $file = $i18nService->getFilePath($i18n_code);
-        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        // 寫檔案
+        $file = "/tmp/no_have_new_line.txt";
+        $fp = fopen($file, "w");
+        fwrite($fp, "bbb456");
+        fclose($fp);
+
         $response = $i18nService->isNeedNewLine($file);
         $this->assertTrue($response);
     }
