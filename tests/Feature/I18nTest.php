@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Services\I18nService;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class I18nTest extends TestCase
@@ -98,6 +100,32 @@ class I18nTest extends TestCase
         $response = $i18nService->writeFiles($i18n, $env);
         $this->assertTrue($response);
     }
+
+//    public function test_writeI18n_mockery()
+//    {
+//        $mock_i18nService = Mockery::mock(I18nService::class);
+//        $mock_i18nService->shouldReceive('getFilePath')->andReturn("/tmp/1111.txt");
+//
+////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
+////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
+////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
+////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+//
+//        $csv_file = "20210316-QuWan-i18n.csv";
+//        try {
+//            $response = $mock_i18nService->getData($csv_file);
+//        } catch (Exception $e) {
+//            echo "<pre>e = " . print_r($e->getMessage(), true) . "</pre>\n";
+//        }
+//        $i18n = $response['i18n'];
+//        echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
+//
+//        $env = "sw";
+//        $response = $mock_i18nService->writeFiles($i18n, $env);
+//        $this->assertTrue($response);
+//    }
 
     public function test_isNeedNewLine_false()
     {

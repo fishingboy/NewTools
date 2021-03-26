@@ -4,10 +4,16 @@ namespace App\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Storage;
-use function PHPUnit\Framework\throwException;
 
 class I18nService
 {
+    private $split_line;
+
+    public function __construct($params = [])
+    {
+        $this->split_line = $params['split_line'] ?? false;
+    }
+    
     /**
      * 取得 csv 檔案 raw data
      * @param string $csv_file
@@ -65,13 +71,15 @@ class I18nService
     public function trimArray(array $items): array
     {
         foreach ($items as $i=> $item) {
+            $item = trim($item);
             if (strpos($item, '"') !== false) {
                 throw new Exception("字串包含雙引號，要額外處理");
             }
-            if ($this->isHaveNewLine($item)) {
-                throw new Exception("字詞包含換行字元，要額外處理。");
+            if ( ! $this->split_line && $this->isHaveNewLine($item)) {
+                throw new Exception("[$item] 字詞包含換行字元，要額外處理。");
             }
-            $items[$i] = trim($item);
+            $items[$i] = $item;
+            $items[$i] = str_replace("<br>", "", $items[$i]);
         }
         return $items;
     }

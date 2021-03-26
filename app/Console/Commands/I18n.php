@@ -51,7 +51,7 @@ class I18n extends Command
         $this->show_command_info($csv_file, $preview);
 
         // 取得 i18n 資料
-        $i18nService = new I18nService();
+        $i18nService = new I18nService(["split_line" => $split_line]);
         try {
             $response = $i18nService->getData($csv_file);
         } catch (Exception $e) {
