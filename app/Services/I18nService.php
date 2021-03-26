@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Storage;
+use function PHPUnit\Framework\throwException;
 
 class I18nService
 {
@@ -58,12 +60,16 @@ class I18nService
      * trim 陣列
      * @param array $items
      * @return array
+     * @throws Exception
      */
     public function trimArray(array $items): array
     {
         foreach ($items as $i=> $item) {
             if (strpos($item, '"') !== false) {
-                exit("字串包含雙引號，要額外處理");
+                throw new Exception("字串包含雙引號，要額外處理");
+            }
+            if ($this->isHaveNewLine($item)) {
+                throw new Exception("字詞包含換行字元，要額外處理。");
             }
             $items[$i] = trim($item);
         }
@@ -142,7 +148,7 @@ class I18nService
                 fwrite($fp, $write_line . "\n");
                 fclose($fp);
 
-                echo "i18n_key 寫入 [{$code}]完成!!\n";
+                echo "i18n_key 寫入 [{$code}] 完成!!\n";
             }
         }
         return true;
@@ -185,5 +191,15 @@ class I18nService
     {
         $content = file_get_contents($file);
         return (strpos($content, "\"$i18n_key\",") === false);
+    }
+
+    /**
+     * 看看有沒有換行
+     * @param string $phrase
+     * @return bool
+     */
+    public function isHaveNewLine(string $phrase): bool
+    {
+        return strpos($phrase, "\n") !== false;
     }
 }

@@ -164,4 +164,25 @@ class I18nTest extends TestCase
         // 關閉並刪除檔案 tmp 檔
         fclose($fp);
     }
+
+
+    public function test_isHaveNewLine_true()
+    {
+        $i18nService = new I18nService();
+
+        $phrase = " Turn your NAS into a smart facial recognition solution.
+ 
+This complete solution is suitable for applications such as member identification management, door access control systems, and smart retail.";
+
+        $response = $i18nService->isHaveNewLine($phrase);
+        $this->assertTrue($response);
+    }
+
+    public function test_isHaveNewLine_false()
+    {
+        $i18nService = new I18nService();
+        $phrase = " Turn your NAS into a smart facial recognition solution.";
+        $response = $i18nService->isHaveNewLine($phrase);
+        $this->assertFalse($response);
+    }
 }
