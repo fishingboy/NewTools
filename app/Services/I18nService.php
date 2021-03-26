@@ -6,11 +6,21 @@ use Illuminate\Support\Facades\Storage;
 
 class I18nService
 {
+    /**
+     * 取得 csv 檔案 raw data
+     * @param string $csv_file
+     * @return string
+     */
     public function getCsv(string $csv_file): string
     {
         return Storage::get($csv_file);
     }
 
+    /**
+     * 取得 csv 資料
+     * @param string $csv_file
+     * @return array[]
+     */
     public function getData(string $csv_file): array
     {
         $fp = fopen("storage/app/" . $csv_file, "r");
@@ -44,6 +54,11 @@ class I18nService
         ];
     }
 
+    /**
+     * trim 陣列
+     * @param array $items
+     * @return array
+     */
     public function trimArray(array $items): array
     {
         foreach ($items as $i=> $item) {
@@ -55,6 +70,12 @@ class I18nService
         return $items;
     }
 
+    /**
+     * 取得 i18n 檔案位置
+     * @param string $i18n_code
+     * @param string $env
+     * @return string
+     */
     public function getFilePath(string $i18n_code, $env = "sw"): string
     {
         $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
@@ -72,12 +93,24 @@ class I18nService
         return "";
     }
 
+    /**
+     * 取得要寫入 csv 的內容
+     * @param $i18n
+     * @param $code
+     * @return string
+     */
     public function getWriteLine($i18n, $code): string
     {
         return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
     }
 
-    // @todo: 看測試要怎麼寫才不會真的去寫檔案
+    /**
+     * 寫入 i18n 檔案
+     * @todo: 看測試要怎麼寫才不會真的去寫檔案
+     * @param array $i18n_array
+     * @param string $env
+     * @return bool
+     */
     public function writeFiles(array $i18n_array, string $env): bool
     {
         foreach ($i18n_array as $i18n) {
@@ -115,6 +148,12 @@ class I18nService
         return true;
     }
 
+    /**
+     * 取得要寫入的 csv data
+     * @param $i18n
+     * @param string $code
+     * @return array
+     */
     public function getWriteRow($i18n, string $code): array
     {
         $row[] = $i18n['en_us'];
@@ -124,6 +163,11 @@ class I18nService
         return $row;
     }
 
+    /**
+     * 寫入 i18n 時，需不需要先換行
+     * @param string $file
+     * @return bool
+     */
     public function isNeedNewLine(string $file): bool
     {
         $content = file_get_contents($file);
@@ -131,6 +175,12 @@ class I18nService
         return ! ($content[$len - 1] == "\n");
     }
 
+    /**
+     * 是不是需要寫入檔案
+     * @param $file
+     * @param string $i18n_key
+     * @return bool
+     */
     public function isNeedWriteFile($file, string $i18n_key): bool
     {
         $content = file_get_contents($file);
