@@ -31,7 +31,13 @@ class I18nService
      */
     public function getData(string $csv_file): array
     {
-        $fp = fopen("storage/app/" . $csv_file, "r");
+        if (strpos($csv_file, "/") !== false) {
+            // 絕對路徑
+            $fp = fopen($csv_file, "r");
+        } else {
+            // 相對路徑
+            $fp = fopen("storage/app/" . $csv_file, "r");
+        }
         $raw_data = [];
         $i18n = [];
         $line_no = 0;
@@ -44,14 +50,26 @@ class I18nService
             $line = $this->trimArray($line);
 
             if ($line_no > 2) {
-                $i18n_row = [];
-                foreach ($line as $i => $item) {
-                    $i18n_code = $code[$i];
-                    if ($i18n_code) {
-                        $i18n_row[$i18n_code] = $item;
+                if ( ! $this->split_line) {
+                    $i18n_row = [];
+                    foreach ($line as $i => $item) {
+                        $i18n_code = $code[$i];
+                        if ($i18n_code) {
+                            $i18n_row[$i18n_code] = $item;
+                        }
                     }
+                    $i18n[] = $i18n_row;
+                } else {
+                    $i18n_tmp = [];
+                    foreach ($line as $i => $item) {
+                        $i18n_code = $code[$i];
+                        $tmp = explode("\n", $item);
+                        foreach ($tmp as $j => $split_item) {
+                            $i18n_tmp[$j][$i18n_code] = trim($split_item);
+                        }
+                    }
+                    $i18n = array_merge($i18n, $i18n_tmp);
                 }
-                $i18n[] = $i18n_row;
             }
 
             $raw_data[] = $line;

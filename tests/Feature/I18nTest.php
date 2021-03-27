@@ -18,7 +18,7 @@ class I18nTest extends TestCase
      */
     public function test_getCSV()
     {
-        $response = Storage::get("20210316-QuWan-i18n.csv");
+        $response = Storage::get("20210324-SW-QVR-AI-Pack-i18n.csv");
         echo "<pre>response = " . print_r($response, true) . "</pre>\n";
         $this->assertIsString($response);
     }
@@ -26,14 +26,14 @@ class I18nTest extends TestCase
     public function test_getCSV2()
     {
         $i18nService = new I18nService();
-        $response = $i18nService->getCsv("20210316-QuWan-i18n.csv");
+        $response = $i18nService->getCsv("20210324-SW-QVR-AI-Pack-i18n.csv");
         $this->assertIsString($response);
     }
 
     public function test_getData()
     {
         $i18nService = new I18nService();
-        $response = $i18nService->getData("20210316-QuWan-i18n.csv");
+        $response = $i18nService->getData("20210324-SW-QVR-AI-Pack-i18n.csv");
         echo "<pre>response = " . print_r($response, true) . "</pre>\n";
         $this->assertIsArray($response);
     }
@@ -42,12 +42,74 @@ class I18nTest extends TestCase
     {
         $i18nService = new I18nService();
 
-        $response = $i18nService->getData("20210316-QuWan-i18n.csv");
+        $response = $i18nService->getData("20210324-SW-QVR-AI-Pack-i18n.csv");
         echo "<pre>response = " . print_r($response, true) . "</pre>\n";
         $this->assertIsArray($response);
         $this->assertArrayHasKey('raw_data', $response);
         $this->assertArrayHasKey('en_us', $response['i18n'][0]);
         $this->assertArrayHasKey('th_th', $response['i18n'][0]);
+    }
+
+    public function test_getData_newLine()
+    {
+        $i18nService = new I18nService(["split_line" => true]);
+
+        // 寫檔案
+        $fp = tmpfile();
+        $content = <<<CSV
+Final ENG,Final CHT,SCH (Schinese)
+en_us,zh_hant_tw,zh_hans_cn
+"Hello<br> 
+World!","哈囉<br>
+世界","哈囉2<br>
+世界2"
+CSV;
+        fwrite($fp, $content);
+        $file = stream_get_meta_data($fp)['uri'];
+
+        $response = $i18nService->getData($file);
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('raw_data', $response);
+        $this->assertArrayHasKey('en_us', $response['i18n'][0]);
+
+        $this->assertEquals([
+            ['en_us' => 'Hello', 'zh_hant_tw' => '哈囉', 'zh_hans_cn' => '哈囉2',],
+            ['en_us' => 'World!', 'zh_hant_tw' => '世界', 'zh_hans_cn' => '世界2',]
+        ], $response['i18n']);
+    }
+
+    public function test_getData_newLine2()
+    {
+        $i18nService = new I18nService(["split_line" => true]);
+
+        // 寫檔案
+        $fp = tmpfile();
+        $content = <<<CSV
+Final ENG,Final CHT,SCH (Schinese)
+en_us,zh_hant_tw,zh_hans_cn
+"eng","zh","cn"
+"Hello<br> 
+World!","哈囉<br>
+世界","哈囉2<br>
+世界2"
+"eng2","zh2","cn2"
+CSV;
+        fwrite($fp, $content);
+        $file = stream_get_meta_data($fp)['uri'];
+
+        $response = $i18nService->getData($file);
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('raw_data', $response);
+        $this->assertArrayHasKey('en_us', $response['i18n'][0]);
+
+        $this->assertEquals([
+            ["en_us" => "eng", "zh_hant_tw" => "zh", "zh_hans_cn" => "cn",],
+            ['en_us' => 'Hello', 'zh_hant_tw' => '哈囉', 'zh_hans_cn' => '哈囉2',],
+            ['en_us' => 'World!', 'zh_hant_tw' => '世界', 'zh_hans_cn' => '世界2',],
+            ["en_us" => "eng2", "zh_hant_tw" => "zh2", "zh_hans_cn" => "cn2",],
+        ], $response['i18n']);
     }
 
     public function test_getSwI18nFile()
@@ -69,7 +131,7 @@ class I18nTest extends TestCase
     public function test_get_write_csv_line()
     {
         $i18nService = new I18nService();
-        $response = $i18nService->getData("20210316-QuWan-i18n.csv");
+        $response = $i18nService->getData("20210324-SW-QVR-AI-Pack-i18n.csv");
         $i18n = $response['i18n'][0];
         $line = $i18nService->getWriteLine($i18n, 'th_th');
         echo "<pre>line = " . print_r($line, true) . "</pre>\n";
@@ -80,7 +142,7 @@ class I18nTest extends TestCase
     public function test_get_write_csv_row()
     {
         $i18nService = new I18nService();
-        $response = $i18nService->getData("20210316-QuWan-i18n.csv");
+        $response = $i18nService->getData("20210324-SW-QVR-AI-Pack-i18n.csv");
         $i18n = $response['i18n'][0];
         $row = $i18nService->getWriteRow($i18n, 'th_th');
         echo "<pre>row = " . print_r($row, true) . "</pre>\n";
@@ -91,7 +153,7 @@ class I18nTest extends TestCase
     public function test_writeI18n()
     {
         $i18nService = new I18nService();
-        $csv_file = "20210316-QuWan-i18n.csv";
+        $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
         $response = $i18nService->getData($csv_file);
         $i18n = $response['i18n'];
         echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
@@ -113,7 +175,7 @@ class I18nTest extends TestCase
 ////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
 ////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
 //
-//        $csv_file = "20210316-QuWan-i18n.csv";
+//        $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
 //        try {
 //            $response = $mock_i18nService->getData($csv_file);
 //        } catch (Exception $e) {
