@@ -163,31 +163,27 @@ CSV;
         $this->assertTrue($response);
     }
 
-//    public function test_writeI18n_mockery()
-//    {
-//        $mock_i18nService = Mockery::mock(I18nService::class);
-//        $mock_i18nService->shouldReceive('getFilePath')->andReturn("/tmp/1111.txt");
-//
-////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
-////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
-////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
-////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
-////        $response = $mock_i18nService->getFilePath("jp_jp", "sw");
-////        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
-//
-//        $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
-//        try {
-//            $response = $mock_i18nService->getData($csv_file);
-//        } catch (Exception $e) {
-//            echo "<pre>e = " . print_r($e->getMessage(), true) . "</pre>\n";
-//        }
-//        $i18n = $response['i18n'];
-//        echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
-//
-//        $env = "sw";
-//        $response = $mock_i18nService->writeFiles($i18n, $env);
-//        $this->assertTrue($response);
-//    }
+    public function test_writeI18n_mockery()
+    {
+        $fp = tmpfile();
+        fwrite($fp, '"Hello","哈囉",,');
+        $file = stream_get_meta_data($fp)['uri'];
+        $mock_i18nService = $this->createPartialMock(I18nService::class, ['getFilePath']);
+        $mock_i18nService->method('getFilePath')->willReturn($file);
+
+        $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
+        try {
+            $response = $mock_i18nService->getData($csv_file);
+        } catch (Exception $e) {
+            echo "<pre>e = " . print_r($e->getMessage(), true) . "</pre>\n";
+        }
+        $i18n = $response['i18n'];
+        echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
+
+        $env = "sw";
+        $response = $mock_i18nService->writeFiles($i18n, $env);
+        $this->assertTrue($response);
+    }
 
     public function test_isNeedNewLine_false()
     {
