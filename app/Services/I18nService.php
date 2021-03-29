@@ -112,7 +112,8 @@ class I18nService
     {
         $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
 
-        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
+        $csv_file_name = $this->getCsvFileName($i18n_code);
+        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/{$csv_file_name}";
         if (file_exists($file)) {
             return $file;
         }
@@ -122,6 +123,22 @@ class I18nService
             return $file;
         }
 
+        return "";
+    }
+
+    /**
+     * 取得 i18n 檔案位置
+     * @param string $i18n_code
+     * @param string $env
+     * @return string
+     */
+    public function getOriginFilePath(string $i18n_code, $env = "sw"): string
+    {
+        $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
+        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
+        if (file_exists($file)) {
+            return $file;
+        }
         return "";
     }
 
@@ -160,7 +177,13 @@ class I18nService
                 }
 
                 if ( ! $this->isNeedWriteFile($file, $i18n_key)) {
-                    echo "i18n_key 已存在 [{$code}]，不需寫入!!\n";
+                    echo "i18n_key 已存在 [{$code}]::[$file]，不需寫入!!\n";
+                    continue;
+                }
+
+                $origin_file = $this->getOriginFilePath($code, $env);
+                if ($origin_file && ! $this->isNeedWriteFile($origin_file, $i18n_key)) {
+                    echo "i18n_key 已存在 [{$code}]::[$origin_file]，不需寫入!!\n";
                     continue;
                 }
 
@@ -227,5 +250,22 @@ class I18nService
     public function isHaveNewLine(string $phrase): bool
     {
         return strpos($phrase, "\n") !== false;
+    }
+
+    /**
+     * 從 i18n code 取得 csv 檔名
+     * @param string $i18n_code
+     * @return string
+     */
+    public function getCsvFileName(string $i18n_code): string
+    {
+        if (strlen($i18n_code) == 5) {
+            return substr($i18n_code, 0 , 3) . strtoupper(substr($i18n_code, 3, 2)) . ".csv";
+        } else if ($i18n_code == "zh_hans_cn") {
+            return "zh_Hans_CN.csv";
+        } else if ($i18n_code == "zh_hant_tw") {
+            return "zh_Hant_TW.csv";
+        }
+        return "";
     }
 }

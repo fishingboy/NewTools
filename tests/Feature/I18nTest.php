@@ -112,6 +112,17 @@ CSV;
         ], $response['i18n']);
     }
 
+    public function test_getCsvFileName()
+    {
+        $i18nService = new I18nService();
+        $i18n_code = "th_th";
+        $this->assertEquals("th_TH.csv", $i18nService->getCsvFileName($i18n_code));
+        $i18n_code = "zh_hant_tw";
+        $this->assertEquals("zh_Hant_TW.csv", $i18nService->getCsvFileName($i18n_code));
+        $i18n_code = "zh_hans_cn";
+        $this->assertEquals("zh_Hans_CN.csv", $i18nService->getCsvFileName($i18n_code));
+    }
+    
     public function test_getSwI18nFile()
     {
         $i18nService = new I18nService();
@@ -119,13 +130,24 @@ CSV;
         $file = $i18nService->getFilePath($i18n_code);
         echo "<pre>file = " . print_r($file, true) . "</pre>\n";
         $this->assertIsString($file);
-        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
+//        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
+        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/th_TH.csv", $file);
 
         $i18n_code = "ro_ro";
         $file = $i18nService->getFilePath($i18n_code);
         echo "<pre>file = " . print_r($file, true) . "</pre>\n";
         $this->assertIsString($file);
         $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/eadesigndev/ro_ro/ro_RO.csv", $file);
+    }
+
+    public function test_getSwI18nOriginFile()
+    {
+        $i18nService = new I18nService();
+        $i18n_code = "th_th";
+        $file = $i18nService->getOriginFilePath($i18n_code);
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        $this->assertIsString($file);
+        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
     }
 
     public function test_get_write_csv_line()
