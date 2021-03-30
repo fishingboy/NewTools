@@ -36,7 +36,7 @@ class I18nService
             $fp = fopen($csv_file, "r");
         } else {
             // 相對路徑
-            $fp = fopen("storage/app/" . $csv_file, "r");
+            $fp = fopen(storage_path("app/{$csv_file}"), "r");
         }
         $raw_data = [];
         $i18n = [];
@@ -110,16 +110,16 @@ class I18nService
      */
     public function getFilePath(string $i18n_code, $env = "sw"): string
     {
-        $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
+        $path = $this->getMagentoPath($env);
 
         $csv_file_name = $this->getCsvFileName($i18n_code);
-        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/{$csv_file_name}";
-        if (file_exists($file)) {
+        $file = "$path/app/i18n/Mageplaza/{$i18n_code}/{$csv_file_name}";
+        if ($this->isFileExists($file)) {
             return $file;
         }
 
-        $file = "$sw_path/app/i18n/eadesigndev/{$i18n_code}/ro_RO.csv";
-        if (file_exists($file)) {
+        $file = "$path/app/i18n/eadesigndev/{$i18n_code}/ro_RO.csv";
+        if ($this->isFileExists($file)) {
             return $file;
         }
 
@@ -136,7 +136,7 @@ class I18nService
     {
         $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
         $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
-        if (file_exists($file)) {
+        if ($this->isFileExists($file)) {
             return $file;
         }
         return "";
@@ -267,5 +267,15 @@ class I18nService
             return "zh_Hant_TW.csv";
         }
         return "";
+    }
+
+    protected function isFileExists($file)
+    {
+        return file_exists($file);
+    }
+
+    protected function getMagentoPath(string $env): string
+    {
+        return "/mnt/c/Users/Leo Kuo/Code/software-store";
     }
 }

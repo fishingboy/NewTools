@@ -125,19 +125,27 @@ CSV;
     
     public function test_getSwI18nFile()
     {
-        $i18nService = new I18nService();
+        $path = "/zzz/software-store";
+
+        $mock = $this->createPartialMock(I18nService::class, ['isFileExists','getMagentoPath']);
+        $mock->method('isFileExists')->willReturnCallback(function($file) use ($path) {
+            if ($file == "{$path}/app/i18n/Mageplaza/th_th/th_TH.csv") {return true;}
+            if ($file == "{$path}/app/i18n/eadesigndev/ro_ro/ro_RO.csv") {return true;}
+            return false;
+        });
+        $mock->method('getMagentoPath')->willReturn($path);
+
         $i18n_code = "th_th";
-        $file = $i18nService->getFilePath($i18n_code);
+        $file = $mock->getFilePath($i18n_code);
         echo "<pre>file = " . print_r($file, true) . "</pre>\n";
         $this->assertIsString($file);
-//        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
-        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/th_TH.csv", $file);
+        $this->assertEquals("{$path}/app/i18n/Mageplaza/th_th/th_TH.csv", $file);
 
         $i18n_code = "ro_ro";
-        $file = $i18nService->getFilePath($i18n_code);
+        $file = $mock->getFilePath($i18n_code);
         echo "<pre>file = " . print_r($file, true) . "</pre>\n";
         $this->assertIsString($file);
-        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/eadesigndev/ro_ro/ro_RO.csv", $file);
+        $this->assertEquals("{$path}/app/i18n/eadesigndev/ro_ro/ro_RO.csv", $file);
     }
 
     public function test_getSwI18nOriginFile()
@@ -173,19 +181,6 @@ CSV;
     }
 
     public function test_writeI18n()
-    {
-        $i18nService = new I18nService();
-        $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
-        $response = $i18nService->getData($csv_file);
-        $i18n = $response['i18n'];
-        echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
-
-        $env = "sw";
-        $response = $i18nService->writeFiles($i18n, $env);
-        $this->assertTrue($response);
-    }
-
-    public function test_writeI18n_mockery()
     {
         $fp = tmpfile();
         fwrite($fp, '"Hello","哈囉",,');
