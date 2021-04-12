@@ -150,12 +150,20 @@ CSV;
 
     public function test_getSwI18nOriginFile()
     {
-        $i18nService = new I18nService();
+        $path = "/zzz/software-store";
+
+        $mock = $this->createPartialMock(I18nService::class, ['isFileExists','getMagentoPath']);
+        $mock->method('isFileExists')->willReturnCallback(function($file) use ($path) {
+            if ($file == "{$path}/app/i18n/Mageplaza/th_th/github_contributions.csv") {return true;}
+            return false;
+        });
+        $mock->method('getMagentoPath')->willReturn($path);
+
         $i18n_code = "th_th";
-        $file = $i18nService->getOriginFilePath($i18n_code);
+        $file = $mock->getOriginFilePath($i18n_code);
         echo "<pre>file = " . print_r($file, true) . "</pre>\n";
         $this->assertIsString($file);
-        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
+        $this->assertEquals("{$path}/app/i18n/Mageplaza/th_th/github_contributions.csv", $file);
     }
 
     public function test_get_write_csv_line()

@@ -134,8 +134,8 @@ class I18nService
      */
     public function getOriginFilePath(string $i18n_code, $env = "sw"): string
     {
-        $sw_path = "/mnt/c/Users/Leo Kuo/Code/software-store";
-        $file = "$sw_path/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
+        $path = $this->getMagentoPath($env);
+        $file = "{$path}/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
         if ($this->isFileExists($file)) {
             return $file;
         }
