@@ -14,11 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    //ServiceResponse::parseStatus(200, 'Success', []);
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    //ServiceResponse::parseStatus(200, 'Success', []);
+//    return view('welcome');
+//});
 
 
-
-Route::get('/tools', 'UserController@showProfile')->name('profile');
+Route::get('/', [App\Http\Controllers\TextEditor::class, 'index'])->name('text_editor');
