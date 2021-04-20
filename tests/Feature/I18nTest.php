@@ -112,6 +112,33 @@ CSV;
         ], $response['i18n']);
     }
 
+    public function test_getData_empty_field()
+    {
+        $i18nService = new I18nService();
+
+        // 寫檔案
+        $fp = tmpfile();
+        $content = <<<CSV
+Final ENG,Final CHT,SCH (Schinese)
+en_us,zh_hant_tw,zh_hans_cn
+"eng","","cn"
+"Hello","哈囉",""
+CSV;
+        fwrite($fp, $content);
+        $file = stream_get_meta_data($fp)['uri'];
+
+        $response = $i18nService->getData($file);
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('raw_data', $response);
+        $this->assertArrayHasKey('en_us', $response['i18n'][0]);
+
+        $this->assertEquals([
+            ["en_us" => "eng", "zh_hans_cn" => "cn",],
+            ['en_us' => 'Hello', 'zh_hant_tw' => '哈囉',],
+        ], $response['i18n']);
+    }
+
     public function test_getCsvFileName()
     {
         $i18nService = new I18nService();

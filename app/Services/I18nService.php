@@ -54,7 +54,7 @@ class I18nService
                     $i18n_row = [];
                     foreach ($line as $i => $item) {
                         $i18n_code = $code[$i];
-                        if ($i18n_code) {
+                        if ($i18n_code && $item) {
                             $i18n_row[$i18n_code] = $item;
                         }
                     }
@@ -63,9 +63,11 @@ class I18nService
                     $i18n_tmp = [];
                     foreach ($line as $i => $item) {
                         $i18n_code = $code[$i];
-                        $tmp = explode("\n", $item);
-                        foreach ($tmp as $j => $split_item) {
-                            $i18n_tmp[$j][$i18n_code] = trim($split_item);
+                        if ($i18n_code && $item) {
+                            $tmp = explode("\n", $item);
+                            foreach ($tmp as $j => $split_item) {
+                                $i18n_tmp[$j][$i18n_code] = trim($split_item);
+                            }
                         }
                     }
                     $i18n = array_merge($i18n, $i18n_tmp);
