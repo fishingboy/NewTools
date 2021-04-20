@@ -157,11 +157,16 @@ class I18nService
      */
     public function getWriteLine($i18n, $code): string
     {
-        $en_us = str_replace('"', '""', $i18n['en_us']);
-        $i18n = str_replace('"', '""', $i18n[$code]);
+        $en_us = $this->convertCsvDoubleQuotes($i18n['en_us']);
+        $i18n = $this->convertCsvDoubleQuotes($i18n[$code]);
         return "\"{$en_us}\",\"{$i18n}\",,";
     }
 
+    private function convertCsvDoubleQuotes($str)
+    {
+        return str_replace('"', '""', $str);
+    }
+    
     /**
      * 寫入 i18n 檔案
      * @param array $i18n_array
@@ -186,9 +191,16 @@ class I18nService
                 }
 
                 if ( ! $this->isNeedWriteFile($file, $i18n_key)) {
-                    echo "i18n_key 已存在 [{$code}]::[$file]，不需寫入!!\n";
-                    continue;
+                    if ( ! $this->isNeedUpdateFile($file, $i18n_key, $lang)) {
+                        echo "i18n_key 已存在 [{$code}]::[$file]，且內容相同，不需寫入及更新!!\n";
+                        continue;
+                    } else {
+                        echo "i18n_key 已存在 [{$code}]::[$file]，但內容不同，需更新!!\n";
+                        exit;
+//                        continue;
+                    }
                 }
+
 
                 $origin_file = $this->getOriginFilePath($code, $site);
                 if ($origin_file && ! $this->isNeedWriteFile($origin_file, $i18n_key)) {
@@ -248,7 +260,25 @@ class I18nService
     public function isNeedWriteFile($file, string $i18n_key): bool
     {
         $content = file_get_contents($file);
-        return (strpos($content, "\"$i18n_key\",") === false);
+        return (strpos($content, "\"{$this->convertCsvDoubleQuotes($i18n_key)}\",") === false);
+    }
+
+    /**
+     * 是不是需要更新檔案
+     * @param $file
+     * @param string $i18n_key
+     * @return bool
+     */
+    public function isNeedUpdateFile($file, string $i18n_key, string $i18n_value): bool
+    {
+        $fp = fopen($file, "r");
+        while ($line = fgetcsv($fp)) {
+            if ($line[0] == $i18n_key) {
+                break;
+            }
+        }
+
+        return ($line[1] != $i18n_value);
     }
 
     /**

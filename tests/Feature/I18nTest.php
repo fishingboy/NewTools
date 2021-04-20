@@ -303,6 +303,43 @@ CSV;
         fclose($fp);
     }
 
+    public function test_isNeedUpdateFile_true()
+    {
+        $i18nService = new I18nService();
+        $i18n_key = "Hello World";
+        $i18n_value = "哈囉世界";
+
+        // 寫檔案
+        $fp = tmpfile();
+        fwrite($fp, '"Hello World","哈囉世世",,');
+        $file = stream_get_meta_data($fp)['uri'];
+
+        // 判斷需不需要新行
+        $response = $i18nService->isNeedUpdateFile($file, $i18n_key, $i18n_value);
+        $this->assertTrue($response);
+
+        // 關閉並刪除檔案 tmp 檔
+        fclose($fp);
+    }
+
+    public function test_isNeedUpdateFile_false()
+    {
+        $i18nService = new I18nService();
+        $i18n_key = "Hello World";
+        $i18n_value = "哈囉世界";
+
+        // 寫檔案
+        $fp = tmpfile();
+        fwrite($fp, '"Hello World","哈囉世界",,');
+        $file = stream_get_meta_data($fp)['uri'];
+
+        // 判斷需不需要新行
+        $response = $i18nService->isNeedUpdateFile($file, $i18n_key, $i18n_value);
+        $this->assertFalse($response);
+
+        // 關閉並刪除檔案 tmp 檔
+        fclose($fp);
+    }
 
     public function test_isHaveNewLine_true()
     {
