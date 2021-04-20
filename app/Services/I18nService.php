@@ -181,7 +181,7 @@ class I18nService
 
                 $file = $this->getFilePath($code, $site);
                 if ( ! $file) {
-                    echo "找不到檔案 [{$file}]，不需寫入!!\n";
+                    echo "[site=$site]::[code=$code] 找不到檔案，不需寫入!!\n";
                     continue;
                 }
 
