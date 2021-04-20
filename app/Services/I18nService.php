@@ -97,9 +97,9 @@ class I18nService
     {
         foreach ($items as $i=> $item) {
             $item = trim($item);
-            if (strpos($item, '"') !== false) {
-                throw new Exception("字串包含雙引號，要額外處理");
-            }
+//            if (strpos($item, '"') !== false) {
+//                throw new Exception("字串包含雙引號，要額外處理");
+//            }
             if ( ! $this->split_line && $this->isHaveNewLine($item)) {
                 throw new Exception("[$item] 字詞包含換行字元，要額外處理。");
             }
@@ -157,7 +157,9 @@ class I18nService
      */
     public function getWriteLine($i18n, $code): string
     {
-        return "\"{$i18n['en_us']}\",\"{$i18n[$code]}\",,";
+        $en_us = str_replace('"', '""', $i18n['en_us']);
+        $i18n = str_replace('"', '""', $i18n[$code]);
+        return "\"{$en_us}\",\"{$i18n}\",,";
     }
 
     /**

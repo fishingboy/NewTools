@@ -333,4 +333,28 @@ This complete solution is suitable for applications such as member identificatio
         $response = $i18nService->getMagentoPath('eu');
         $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/eshop-eu", $response);
     }
+
+    public function test_getWriteLine()
+    {
+        $i18nService = new I18nService();
+        $i18n = [
+            "en_us" => "Hello",
+            "zh_hant_tw" => "哈囉",
+        ];
+        $code = "zh_hant_tw";
+        $response = $i18nService->getWriteLine($i18n, $code);
+        $this->assertEquals('"Hello","哈囉",,', $response);
+    }
+
+    public function test_getWriteLineWithDoubleQuotes()
+    {
+        $i18nService = new I18nService();
+        $i18n = [
+            "en_us" => 'No results for "{query}"',
+            "zh_hant_tw" => '沒有此項目的結果："{query}"',
+        ];
+        $code = "zh_hant_tw";
+        $response = $i18nService->getWriteLine($i18n, $code);
+        $this->assertEquals('"No results for ""{query}""","沒有此項目的結果：""{query}""",,', $response);
+    }
 }
