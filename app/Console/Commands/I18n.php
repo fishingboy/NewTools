@@ -49,7 +49,7 @@ class I18n extends Command
         $split_line = $this->option('split-line');
 
         // 顯示執行提示
-        $this->show_command_info($csv_file, $preview);
+        $this->show_command_info($csv_file, $preview, $site);
 
         // 取得 i18n 資料
         $i18nService = new I18nService(["split_line" => $split_line]);
@@ -73,16 +73,15 @@ class I18n extends Command
 
     /**
      * 顯示執行命令的提示
-     * @param $csv_file
-     * @param $preview
      */
-    public function show_command_info($csv_file, $preview)
+    public function show_command_info($csv_file, $preview, $site)
     {
         $preview_label = $preview ? "On" : "Off";
         echo "==========  i18n 佈屬工具  ==========\n";
         echo "\n";
-        echo "[csv_file]: {$csv_file}\n";
-        echo "[preview]: {$preview_label}\n";
+        echo "[csv_file] : {$csv_file}\n";
+        echo "[site]     : {$site}\n";
+        echo "[preview]  : {$preview_label}\n";
         echo "\n";
     }
 }
