@@ -232,8 +232,8 @@ CSV;
         $i18n = $response['i18n'];
         echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
 
-        $env = "sw";
-        $response = $mock_i18nService->writeFiles($i18n, $env);
+        $site = "sw";
+        $response = $mock_i18nService->writeFiles($i18n, $site);
         $this->assertTrue($response);
     }
 

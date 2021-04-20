@@ -13,7 +13,7 @@ class I18n extends Command
      *
      * @var string
      */
-    protected $signature = 'i18n:deploy {csv_file?} {--preview} {--split-line}';
+    protected $signature = 'i18n:deploy {csv_file?} {--site=sw} {--preview} {--split-line}';
 
     /**
      * The console command description.
@@ -44,6 +44,7 @@ class I18n extends Command
         // @todo: 畫面加一些提示
 
         $csv_file = $this->argument('csv_file') ?? "20210316-QuWan-i18n.csv";
+        $site = $this->option('site');
         $preview = $this->option('preview');
         $split_line = $this->option('split-line');
 
@@ -60,13 +61,12 @@ class I18n extends Command
 
         $i18n = $response['i18n'];
 
-        $env = "sw";
         if ($preview) {
             // 預覽
             echo "<pre>i18n = " . print_r($i18n, true) . "</pre>\n";
         } else {
             // 寫入
-            $response = $i18nService->writeFiles($i18n, $env);
+            $response = $i18nService->writeFiles($i18n, $site);
             echo "\n匯入 i18n 完畢。\n";
         }
     }

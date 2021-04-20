@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Storage;
 
 class I18nService
 {
-    const ENV_SW = "sw";
-    const ENV_EU = "eu";
-    const ENV_TW = "tw";
-    const ENV_US = "us";
+    const SITE_SW = "sw";
+    const SITE_EU = "eu";
+    const SITE_TW = "tw";
+    const SITE_US = "us";
 
     private $split_line;
 
@@ -112,12 +112,12 @@ class I18nService
     /**
      * 取得 i18n 檔案位置
      * @param string $i18n_code
-     * @param string $env
+     * @param string $site
      * @return string
      */
-    public function getFilePath(string $i18n_code, $env = "sw"): string
+    public function getFilePath(string $i18n_code, $site = "sw"): string
     {
-        $path = $this->getMagentoPath($env);
+        $path = $this->getMagentoPath($site);
 
         $csv_file_name = $this->getCsvFileName($i18n_code);
         $file = "$path/app/i18n/Mageplaza/{$i18n_code}/{$csv_file_name}";
@@ -136,12 +136,12 @@ class I18nService
     /**
      * 取得 i18n 檔案位置
      * @param string $i18n_code
-     * @param string $env
+     * @param string $site
      * @return string
      */
-    public function getOriginFilePath(string $i18n_code, $env = "sw"): string
+    public function getOriginFilePath(string $i18n_code, $site = "sw"): string
     {
-        $path = $this->getMagentoPath($env);
+        $path = $this->getMagentoPath($site);
         $file = "{$path}/app/i18n/Mageplaza/{$i18n_code}/github_contributions.csv";
         if ($this->isFileExists($file)) {
             return $file;
@@ -162,12 +162,12 @@ class I18nService
 
     /**
      * 寫入 i18n 檔案
-     * @todo: 看測試要怎麼寫才不會真的去寫檔案
      * @param array $i18n_array
-     * @param string $env
+     * @param string $site
      * @return bool
+     * @todo: 看測試要怎麼寫才不會真的去寫檔案
      */
-    public function writeFiles(array $i18n_array, string $env): bool
+    public function writeFiles(array $i18n_array, string $site): bool
     {
         foreach ($i18n_array as $i18n) {
             $i18n_key = $i18n['en_us'];
@@ -177,7 +177,7 @@ class I18nService
                     continue;
                 }
 
-                $file = $this->getFilePath($code, $env);
+                $file = $this->getFilePath($code, $site);
                 if ( ! $file) {
                     echo "找不到檔案 [{$file}]，不需寫入!!\n";
                     continue;
@@ -188,7 +188,7 @@ class I18nService
                     continue;
                 }
 
-                $origin_file = $this->getOriginFilePath($code, $env);
+                $origin_file = $this->getOriginFilePath($code, $site);
                 if ($origin_file && ! $this->isNeedWriteFile($origin_file, $i18n_key)) {
                     echo "i18n_key 已存在 [{$code}]::[$origin_file]，不需寫入!!\n";
                     continue;
@@ -281,16 +281,16 @@ class I18nService
         return file_exists($file);
     }
 
-    public function getMagentoPath(string $env): string
+    public function getMagentoPath(string $site): string
     {
-        switch ($env) {
-            case self::ENV_EU:
+        switch ($site) {
+            case self::SITE_EU:
                 return "/mnt/c/Users/Leo Kuo/Code/eshop-eu";
-            case self::ENV_TW:
+            case self::SITE_TW:
                 return "/mnt/c/Users/Leo Kuo/Code/eshop-tw";
-            case self::ENV_US:
+            case self::SITE_US:
                 return "/mnt/c/Users/Leo Kuo/Code/eshop-us";
-            case self::ENV_SW:
+            case self::SITE_SW:
             default:
                 return "/mnt/c/Users/Leo Kuo/Code/software-store";
         }
