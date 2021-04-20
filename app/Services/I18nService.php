@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Storage;
 
 class I18nService
 {
+    const ENV_SW = "sw";
+    const ENV_EU = "eu";
+    const ENV_TW = "tw";
+    const ENV_US = "us";
+
     private $split_line;
 
     public function __construct($params = [])
@@ -276,8 +281,18 @@ class I18nService
         return file_exists($file);
     }
 
-    protected function getMagentoPath(string $env): string
+    public function getMagentoPath(string $env): string
     {
-        return "/mnt/c/Users/Leo Kuo/Code/software-store";
+        switch ($env) {
+            case self::ENV_EU:
+                return "/mnt/c/Users/Leo Kuo/Code/eshop-eu";
+            case self::ENV_TW:
+                return "/mnt/c/Users/Leo Kuo/Code/eshop-tw";
+            case self::ENV_US:
+                return "/mnt/c/Users/Leo Kuo/Code/eshop-us";
+            case self::ENV_SW:
+            default:
+                return "/mnt/c/Users/Leo Kuo/Code/software-store";
+        }
     }
 }

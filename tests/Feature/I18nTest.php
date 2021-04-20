@@ -323,4 +323,14 @@ This complete solution is suitable for applications such as member identificatio
         $response = $i18nService->isHaveNewLine($phrase);
         $this->assertFalse($response);
     }
+
+    public function test_getMagentoPath()
+    {
+        $i18nService = new I18nService();
+        $response = $i18nService->getMagentoPath('sw');
+        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/software-store", $response);
+
+        $response = $i18nService->getMagentoPath('eu');
+        $this->assertEquals("/mnt/c/Users/Leo Kuo/Code/eshop-eu", $response);
+    }
 }
