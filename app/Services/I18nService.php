@@ -196,8 +196,8 @@ class I18nService
                         continue;
                     } else {
                         echo "i18n_key 已存在 [{$code}]::[$file]，但內容不同，需更新!!\n";
-                        exit;
-//                        continue;
+//                        exit;
+                        continue;
                     }
                 }
 
