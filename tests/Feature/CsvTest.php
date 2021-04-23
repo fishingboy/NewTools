@@ -103,4 +103,23 @@ class CsvTest extends TestCase
         $expected .= '"World","世界",,' . PHP_EOL;
         $this->assertEquals($expected, $content);
     }
+
+    public function test_search()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csv-search");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fclose($fp);
+
+        $key = "Free";
+        $response = $csv->searchKey($file, $key);
+
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>key = " . print_r($key, true) . "</pre>\n";
+
+        $this->assertEquals(["Free","免費","",""], $response);
+    }
 }

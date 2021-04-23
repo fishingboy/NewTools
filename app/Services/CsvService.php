@@ -13,6 +13,28 @@ use function PHPUnit\Framework\fileExists;
  */
 class CsvService
 {
+    public function searchKey(string $file, string $key)
+    {
+        if ( ! file_exists($file)) {
+            return false;
+        }
+
+        // 組合出 csv 裡的搜尋字串
+        $key = '"' . $this->convertCsvDoubleQuotes($key) . '"';
+
+        // 讀檔
+        $fp = fopen($file, "r");
+        $new_content = "";
+        // 逐行檢查
+        while ($line = fgets($fp)) {
+            if (strpos($line, $key) === 0) {
+                //  找到 key 那行就做更新
+                return str_getcsv($line);
+            }
+        }
+        return false;
+    }
+
     public function write($file, $data): bool
     {
         $write_line = $this->getWriteLine($data);
@@ -82,7 +104,7 @@ class CsvService
      * @param $data
      * @return string
      */
-    public function getWriteLine($data): string
+    private function getWriteLine($data): string
     {
         $csv_content = "";
         foreach ($data as $i => $value) {
@@ -107,7 +129,7 @@ class CsvService
      * @param string $file
      * @return bool
      */
-    public function isNeedNewLine(string $file): bool
+    private function isNeedNewLine(string $file): bool
     {
         $content = file_get_contents($file);
         $len = strlen($content);
