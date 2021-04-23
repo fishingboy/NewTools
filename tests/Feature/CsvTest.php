@@ -44,4 +44,40 @@ class CsvTest extends TestCase
         $this->assertEquals($expected, $content);
     }
 
+    public function test_update_exists_file()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csvtt");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fclose($fp);
+
+        $data = [
+            "Free","自由","",""
+        ];
+        $csv->update($file, $data);
+
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>data = " . print_r($data, true) . "</pre>\n";
+
+        $content = file_get_contents($file);
+        echo "<pre>content = " . print_r($content, true) . "</pre>\n";
+        $expected  = '"Hello","哈囉",,' . PHP_EOL;
+        $expected .= '"Free","自由",,' . PHP_EOL;
+        $expected .= '"World","世界",,' . PHP_EOL;
+        $this->assertEquals($expected, $content);
+    }
+
+    public function test_update_not_exists_file()
+    {
+        $csv = new CsvService();
+        $file = "/tmp/11111";
+        $data = [
+            "Free","自由","",""
+        ];
+        $response = $csv->update($file, $data);
+        $this->assertFalse($response);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use function PHPUnit\Framework\fileExists;
 
 /**
  * @todo: 給一個 file 做讀取/寫入/更新/查詢的動作
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class CsvService
 {
-    public function write($file, $data)
+    public function write($file, $data): bool
     {
         $write_line = $this->getWriteLine($data);
         $new_line = $this->isNeedNewLine($file);
@@ -22,6 +23,35 @@ class CsvService
         }
         fwrite($fp, $write_line . "\n");
         fclose($fp);
+
+        return true;
+    }
+
+    public function update(string $file, array $data): bool
+    {
+        if ( ! file_exists($file)) {
+            return false;
+        }
+
+        // 組合出 csv 裡的搜尋字串
+        $key = '"' . $this->convertCsvDoubleQuotes($data[0]) . '"';
+
+        // 讀檔
+        $fp = fopen($file, "r");
+        $new_content = "";
+        // 逐行檢查
+        while ($line = fgets($fp)) {
+            if (strpos($line, $key) === 0) {
+                //  找到 key 那行就做更新
+                $write_line = $this->getWriteLine($data);
+                $new_content .= $write_line . "\n";
+            } else {
+                // 其他行不動異動直接寫入
+                $new_content .= $line;
+            }
+        }
+        file_put_contents($file, $new_content);
+        return true;
     }
 
     /**
