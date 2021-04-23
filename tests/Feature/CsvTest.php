@@ -122,4 +122,24 @@ class CsvTest extends TestCase
 
         $this->assertEquals(["Free","免費","",""], $response);
     }
+
+    public function test_isDuplicateKey()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csv-search");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fclose($fp);
+
+        $key = "Hello";
+        $response = $csv->isDuplicateKey($file, $key);
+        $this->assertTrue($response);
+
+        $key = "Free";
+        $response = $csv->isDuplicateKey($file, $key);
+        $this->assertFalse($response);
+    }
 }

@@ -82,6 +82,5 @@ class I18n extends Command
         echo "[csv_file] : {$csv_file}\n";
         echo "[site]     : {$site}\n";
         echo "[preview]  : {$preview_label}\n";
-        echo "\n";
     }
 }

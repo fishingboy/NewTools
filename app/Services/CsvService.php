@@ -59,6 +59,17 @@ class CsvService
             return false;
         }
 
+        // 如果 key 有重覆，就整個刪掉重寫一筆新的
+        if ($this->isDuplicateKey($file, $data[0])) {
+            // 刪掉
+            $this->deleteKey($file, $data[0]);
+            // 寫入
+            $this->write($file, $data);
+
+            echo "[{$data[0]}] 重覆出現，刪掉重建！！\n";
+            return true;
+        }
+
         // 組合出 csv 裡的搜尋字串
         $key = '"' . $this->convertCsvDoubleQuotes($data[0]) . '"';
 
@@ -101,6 +112,29 @@ class CsvService
         }
         file_put_contents($file, $new_content);
         return true;
+    }
+
+    public function isDuplicateKey(string $file, string $key): bool
+    {
+        if ( ! file_exists($file)) {
+            return false;
+        }
+
+        // 組合出 csv 裡的搜尋字串
+        $key = '"' . $this->convertCsvDoubleQuotes($key) . '"';
+
+        // 讀檔
+        $fp = fopen($file, "r");
+        $new_content = "";
+        // 逐行檢查
+        $count = 0;
+        while ($line = fgets($fp)) {
+            // 符合 key 的那行不寫入
+            if (strpos($line, $key) === 0) {
+                $count++;
+            }
+        }
+        return ($count > 1);
     }
 
     /**

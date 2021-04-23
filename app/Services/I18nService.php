@@ -204,7 +204,7 @@ class I18nService
     {
         foreach ($i18n_array as $i18n) {
             $i18n_key = $i18n['en_us'];
-            echo "i18n key : `$i18n_key`\n\n";
+            echo "\ni18n key : `$i18n_key`\n";
             foreach ($i18n as $code => $lang) {
                 if ($code == "en_us") {
                     continue;
@@ -221,9 +221,13 @@ class I18nService
                         echo "i18n_key 已存在 [{$code}]::[$file]，且內容相同，不需寫入及更新!!\n";
                         continue;
                     } else {
-                        echo "i18n_key 已存在 [{$code}]::[$file]，但內容不同，需更新!!\n";
                         // 寫入 csv
-                        $this->csvService->update($file, $this->getWriteData($i18n, $code));
+                        $status = $this->csvService->update($file, $this->getWriteData($i18n, $code));
+                        if ($status) {
+                            echo "i18n_key [{$code}]::[$file] 更新成功!!\n";
+                        } else {
+                            exit("i18n_key [{$code}]::[$file] 更新失敗!!\n");
+                        }
                         continue;
                     }
                 }
@@ -236,8 +240,10 @@ class I18nService
                 }
 
                 // 寫入 csv
-                $this->csvService->write($file, $this->getWriteData($i18n, $code));
-
+                $status = $this->csvService->write($file, $this->getWriteData($i18n, $code));
+                if ( ! $status) {
+                    exit("i18n_key 寫入 [{$code}] 失敗!!\n");
+                }
                 echo "i18n_key 寫入 [{$code}] 完成!!\n";
             }
         }
