@@ -80,4 +80,27 @@ class CsvTest extends TestCase
         $response = $csv->update($file, $data);
         $this->assertFalse($response);
     }
+
+    public function test_delete_key_on_exists_file()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csvtt");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fclose($fp);
+
+        $key = "Free";
+        $csv->deleteKey($file, $key);
+
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>key = " . print_r($key, true) . "</pre>\n";
+
+        $content = file_get_contents($file);
+        echo "<pre>content = " . print_r($content, true) . "</pre>\n";
+        $expected  = '"Hello","哈囉",,' . PHP_EOL;
+        $expected .= '"World","世界",,' . PHP_EOL;
+        $this->assertEquals($expected, $content);
+    }
 }

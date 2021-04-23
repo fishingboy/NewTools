@@ -54,6 +54,29 @@ class CsvService
         return true;
     }
 
+    public function deleteKey(string $file, string $key): bool
+    {
+        if ( ! file_exists($file)) {
+            return false;
+        }
+
+        // 組合出 csv 裡的搜尋字串
+        $key = '"' . $this->convertCsvDoubleQuotes($key) . '"';
+
+        // 讀檔
+        $fp = fopen($file, "r");
+        $new_content = "";
+        // 逐行檢查
+        while ($line = fgets($fp)) {
+            // 符合 key 的那行不寫入
+            if (strpos($line, $key) !== 0) {
+                $new_content .= $line;
+            }
+        }
+        file_put_contents($file, $new_content);
+        return true;
+    }
+
     /**
      * 取得要寫入 csv 的內容
      * @param $data
