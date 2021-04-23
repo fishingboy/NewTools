@@ -13,6 +13,11 @@ use function PHPUnit\Framework\fileExists;
  */
 class CsvService
 {
+    public function __construct()
+    {
+
+    }
+    
     public function searchKey(string $file, string $key)
     {
         if ( ! file_exists($file)) {
@@ -24,7 +29,6 @@ class CsvService
 
         // 讀檔
         $fp = fopen($file, "r");
-        $new_content = "";
         // 逐行檢查
         while ($line = fgets($fp)) {
             if (strpos($line, $key) === 0) {

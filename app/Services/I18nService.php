@@ -14,11 +14,19 @@ class I18nService
 
     private $split_line;
 
+    private $csvService;
+
     public function __construct($params = [])
     {
         $this->split_line = $params['split_line'] ?? false;
+        $this->csvService = new CsvService();
     }
-    
+
+    public function set_csv_service(CsvService $csvService)
+    {
+        $this->csvService = $csvService;
+    }
+
     /**
      * 取得 csv 檔案 raw data
      * @param string $csv_file
@@ -162,6 +170,24 @@ class I18nService
         return "\"{$en_us}\",\"{$i18n}\",,";
     }
 
+    /**
+     * 取得要寫入 csv 的內容
+     * @param $i18n
+     * @param $code
+     * @return array
+     */
+    public function getWriteData($i18n, $code): array
+    {
+//        $en_us = $this->convertCsvDoubleQuotes($i18n['en_us']);
+//        $i18n = $this->convertCsvDoubleQuotes($i18n[$code]);
+        return [
+            $i18n['en_us'],
+            $i18n[$code],
+            "",
+            "",
+        ];
+    }
+
     private function convertCsvDoubleQuotes($str)
     {
         return str_replace('"', '""', $str);
@@ -208,15 +234,8 @@ class I18nService
                     continue;
                 }
 
-                $write_line = $this->getWriteLine($i18n, $code);
-                $new_line = $this->isNeedNewLine($file);
-
-                $fp = fopen($file, "a+");
-                if ($new_line) {
-                    fwrite($fp, "\n");
-                }
-                fwrite($fp, $write_line . "\n");
-                fclose($fp);
+                // 寫入 csv
+                $this->csvService->write($file, $this->getWriteData($i18n, $code));
 
                 echo "i18n_key 寫入 [{$code}] 完成!!\n";
             }

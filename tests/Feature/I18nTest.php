@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\CsvService;
 use App\Services\I18nService;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -222,6 +223,9 @@ CSV;
         $file = stream_get_meta_data($fp)['uri'];
         $mock_i18nService = $this->createPartialMock(I18nService::class, ['getFilePath']);
         $mock_i18nService->method('getFilePath')->willReturn($file);
+
+        $mock_i18nService->set_csv_service(new CsvService());
+
 
         $csv_file = "20210324-SW-QVR-AI-Pack-i18n.csv";
         try {
