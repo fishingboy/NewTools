@@ -206,13 +206,13 @@ class I18nService
     {
         foreach ($i18n_array as $i18n) {
             $i18n_key = $i18n['en_us'];
-            echo "\ni18n key : `$i18n_key`\n";
+            $module_name = $i18n['Module Name'] ?? "";
+            echo "\ni18n key : `$i18n_key`, module_name=`$module_name`\n";
             foreach ($i18n as $code => $lang) {
                 if (in_array($code, ["en_us", 'Module', "Module Name"])) {
                     continue;
                 }
 
-                $module_name = $i18n['Module Name'] ?? "";
 
                 $file = $this->getFilePath($code, $site);
                 if ( ! $file) {
@@ -220,8 +220,8 @@ class I18nService
                     continue;
                 }
 
-                if ( ! $this->isNeedWriteFile($file, $i18n_key)) {
-                    if ( ! $this->isNeedUpdateFile($file, $i18n_key, $lang)) {
+                if ( ! $this->isNeedWriteFile($file, $i18n_key, $module_name)) {
+                    if ( ! $this->isNeedUpdateFile($file, $i18n_key, $lang, $module_name)) {
                         echo "i18n_key 已存在 [{$code}]::[$file]，且內容相同，不需寫入及更新!!\n";
                         continue;
                     } else {
@@ -285,31 +285,30 @@ class I18nService
      * 是不是需要寫入檔案
      * @param $file
      * @param string $i18n_key
+     * @param string $module_name
      * @return bool
      */
-    public function isNeedWriteFile($file, string $i18n_key): bool
+    public function isNeedWriteFile($file, string $i18n_key, $module_name = ""): bool
     {
-        $content = file_get_contents($file);
-        return (strpos($content, "\"{$this->convertCsvDoubleQuotes($i18n_key)}\",") === false) &&
-               (strpos($content, "{$this->convertCsvDoubleQuotes($i18n_key)},") === false);
+        $csvService = new CsvService();
+        return ! $csvService->searchKey($file, $i18n_key, $module_name);
     }
 
     /**
      * 是不是需要更新檔案
      * @param $file
      * @param string $i18n_key
+     * @param string $i18n_value
      * @return bool
      */
-    public function isNeedUpdateFile($file, string $i18n_key, string $i18n_value): bool
+    public function isNeedUpdateFile($file, string $i18n_key, string $i18n_value, $module_name = ""): bool
     {
-        $fp = fopen($file, "r");
-        while ($line = fgetcsv($fp)) {
-            if ($line[0] == $i18n_key) {
-                break;
-            }
-        }
+        $csvService = new CsvService();
+        $i18n = $csvService->searchKey($file, $i18n_key, $module_name);
 
-        return ($line[1] != $i18n_value);
+//        echo "<pre>i18n[1] = " . print_r($i18n[1], true) . "</pre>\n";
+//        echo "<pre>i18n_value = " . print_r($i18n_value, true) . "</pre>\n";
+        return ($i18n[1] != $i18n_value);
     }
 
     /**
