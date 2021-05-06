@@ -51,6 +51,32 @@ class I18nTest extends TestCase
         $this->assertArrayHasKey('th_th', $response['i18n'][0]);
     }
 
+
+    public function test_getData_with_module()
+    {
+        $i18nService = new I18nService(["split_line" => true]);
+
+        // 寫檔案
+        $fp = tmpfile();
+        $content = <<<CSV
+Final ENG,Final CHT,SCH (Schinese),Module,Module Name
+en_us,zh_hant_tw,zh_hans_cn,Module,Module Name
+"Hello","哈囉","看三小",module,QnapLeo
+CSV;
+        fwrite($fp, $content);
+        $file = stream_get_meta_data($fp)['uri'];
+
+        $response = $i18nService->getData($file);
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('raw_data', $response);
+        $this->assertArrayHasKey('en_us', $response['i18n'][0]);
+
+        $this->assertEquals([
+            ['en_us' => 'Hello', 'zh_hant_tw' => '哈囉', 'zh_hans_cn' => '看三小',"Module"=>"module","Module Name" => "QnapLeo"],
+        ], $response['i18n']);
+    }
+
     public function test_getData_newLine()
     {
         $i18nService = new I18nService(["split_line" => true]);
@@ -297,6 +323,24 @@ CSV;
         // 寫檔案
         $fp = tmpfile();
         fwrite($fp, '"Hello World","哈囉世界",,');
+        $file = stream_get_meta_data($fp)['uri'];
+
+        // 判斷需不需要新行
+        $response = $i18nService->isNeedWriteFile($file, $i18n_key);
+        $this->assertFalse($response);
+
+        // 關閉並刪除檔案 tmp 檔
+        fclose($fp);
+    }
+
+    public function test_isNeedWriteFile_false2()
+    {
+        $i18nService = new I18nService();
+        $i18n_key = "Hello World";
+
+        // 寫檔案
+        $fp = tmpfile();
+        fwrite($fp, 'Hello World,哈囉世界,,');
         $file = stream_get_meta_data($fp)['uri'];
 
         // 判斷需不需要新行

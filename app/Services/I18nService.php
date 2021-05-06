@@ -180,11 +180,13 @@ class I18nService
     {
 //        $en_us = $this->convertCsvDoubleQuotes($i18n['en_us']);
 //        $i18n = $this->convertCsvDoubleQuotes($i18n[$code]);
+        $module = $i18n['Module'] ?? "";
+        $module_name = $i18n['Module Name'] ?? "";
         return [
             $i18n['en_us'],
             $i18n[$code],
-            "",
-            "",
+            $module,
+            $module_name,
         ];
     }
 
@@ -206,9 +208,11 @@ class I18nService
             $i18n_key = $i18n['en_us'];
             echo "\ni18n key : `$i18n_key`\n";
             foreach ($i18n as $code => $lang) {
-                if ($code == "en_us") {
+                if (in_array($code, ["en_us", 'Module', "Module Name"])) {
                     continue;
                 }
+
+                $module_name = $i18n['Module Name'] ?? "";
 
                 $file = $this->getFilePath($code, $site);
                 if ( ! $file) {
@@ -222,7 +226,7 @@ class I18nService
                         continue;
                     } else {
                         // 寫入 csv
-                        $status = $this->csvService->update($file, $this->getWriteData($i18n, $code));
+                        $status = $this->csvService->update($file, $this->getWriteData($i18n, $code), $module_name);
                         if ($status) {
                             echo "i18n_key [{$code}]::[$file] 更新成功!!\n";
                         } else {
@@ -286,7 +290,8 @@ class I18nService
     public function isNeedWriteFile($file, string $i18n_key): bool
     {
         $content = file_get_contents($file);
-        return (strpos($content, "\"{$this->convertCsvDoubleQuotes($i18n_key)}\",") === false);
+        return (strpos($content, "\"{$this->convertCsvDoubleQuotes($i18n_key)}\",") === false) &&
+               (strpos($content, "{$this->convertCsvDoubleQuotes($i18n_key)},") === false);
     }
 
     /**

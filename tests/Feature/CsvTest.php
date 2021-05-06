@@ -70,6 +70,36 @@ class CsvTest extends TestCase
         $this->assertEquals($expected, $content);
     }
 
+    public function test_update_exists_file_with_module_name()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csvtt");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","洗介",,' . PHP_EOL);
+        fputs($fp, '"World","世界",module,Qnap_module1' . PHP_EOL);
+        fclose($fp);
+
+        $data = ["Free","自由","",""];
+        $csv->update($file, $data);
+
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>data = " . print_r($data, true) . "</pre>\n";
+
+        $data = ["World","界世","module","Qnap_module1"];
+        $csv->update($file, $data, "Qnap_module1");
+
+
+        $content = file_get_contents($file);
+        echo "<pre>content = " . print_r($content, true) . "</pre>\n";
+        $expected  = '"Hello","哈囉",,' . PHP_EOL;
+        $expected .= '"Free","自由",,' . PHP_EOL;
+        $expected .= '"World","洗介",,' . PHP_EOL;
+        $expected .= '"World","界世",module,Qnap_module1' . PHP_EOL;
+        $this->assertEquals($expected, $content);
+    }
+
     public function test_update_not_exists_file()
     {
         $csv = new CsvService();
@@ -104,6 +134,33 @@ class CsvTest extends TestCase
         $this->assertEquals($expected, $content);
     }
 
+
+    public function test_delete_key_on_exists_file_with_module_name()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csvtt");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fputs($fp, '"World","世界",module,QNAP_Delete' . PHP_EOL);
+        fclose($fp);
+
+        $key = "Free";
+        $csv->deleteKey($file, $key);
+        $key = "World";
+        $csv->deleteKey($file, $key, "QNAP_Delete");
+
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>key = " . print_r($key, true) . "</pre>\n";
+
+        $content = file_get_contents($file);
+        echo "<pre>content = " . print_r($content, true) . "</pre>\n";
+        $expected  = '"Hello","哈囉",,' . PHP_EOL;
+        $expected .= '"World","世界",,' . PHP_EOL;
+        $this->assertEquals($expected, $content);
+    }
+
     public function test_search()
     {
         $csv = new CsvService();
@@ -112,6 +169,7 @@ class CsvTest extends TestCase
         fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
         fputs($fp, '"Free","免費",,' . PHP_EOL);
         fputs($fp, '"World","世界",,' . PHP_EOL);
+        fputs($fp, '"World","世界2",module,Qnap_Search' . PHP_EOL);
         fclose($fp);
 
         $key = "Free";
@@ -123,6 +181,35 @@ class CsvTest extends TestCase
         $this->assertEquals(["Free","免費","",""], $response);
     }
 
+    public function test_searchWithModule()
+    {
+        $csv = new CsvService();
+        $file = tempnam("/tmp", "csv-search");
+        $fp = fopen($file, "a+");
+        fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
+        fputs($fp, '"Free","免費",,' . PHP_EOL);
+        fputs($fp, '"World","世界",,' . PHP_EOL);
+        fputs($fp, '"World","世界2",module,Qnap_Search' . PHP_EOL);
+        fclose($fp);
+
+        $key = "Free";
+        $response = $csv->searchKey($file, $key);
+        echo "<pre>file = " . print_r($file, true) . "</pre>\n";
+        echo "<pre>key = " . print_r($key, true) . "</pre>\n";
+
+        $this->assertEquals(["Free","免費","",""], $response);
+
+        $key = "World";
+        $response = $csv->searchKey($file, $key);
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertEquals(["World","世界","",""], $response);
+
+        $key = "World";
+        $response = $csv->searchKey($file, $key, "Qnap_Search");
+        echo "<pre>response = " . print_r($response, true) . "</pre>\n";
+        $this->assertEquals(["World","世界2","module","Qnap_Search"], $response);
+    }
+
     public function test_isDuplicateKey()
     {
         $csv = new CsvService();
@@ -132,6 +219,9 @@ class CsvTest extends TestCase
         fputs($fp, '"Hello","哈囉",,' . PHP_EOL);
         fputs($fp, '"Free","免費",,' . PHP_EOL);
         fputs($fp, '"World","世界",,' . PHP_EOL);
+        fputs($fp, '"Cool","酷",module,Qnap_Leo' . PHP_EOL);
+        fputs($fp, '"Cool","酷",module,Qnap_Fishingboy' . PHP_EOL);
+        fputs($fp, '"Cool","酷酷",module,"Qnap_Leo"' . PHP_EOL);
         fclose($fp);
 
         $key = "Hello";
@@ -140,6 +230,12 @@ class CsvTest extends TestCase
 
         $key = "Free";
         $response = $csv->isDuplicateKey($file, $key);
+        $this->assertFalse($response);
+
+        $key = "Cool";
+        $response = $csv->isDuplicateKey($file, $key, "Qnap_Leo");
+        $this->assertTrue($response);
+        $response = $csv->isDuplicateKey($file, $key, "Qnap_Fishingboy");
         $this->assertFalse($response);
     }
 }
