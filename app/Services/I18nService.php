@@ -213,7 +213,7 @@ class I18nService
                     continue;
                 }
 
-
+                // 檢查檔案存不存在
                 $file = $this->getFilePath($code, $site);
                 if ( ! $file) {
                     echo "[site=$site]::[code=$code] 找不到檔案，不需寫入!!\n";
@@ -288,7 +288,7 @@ class I18nService
      * @param string $module_name
      * @return bool
      */
-    public function isNeedWriteFile($file, string $i18n_key, $module_name = ""): bool
+    public function isNeedWriteFile($file, string $i18n_key, string $module_name = ""): bool
     {
         $csvService = new CsvService();
         return ! $csvService->searchKey($file, $i18n_key, $module_name);
@@ -305,9 +305,6 @@ class I18nService
     {
         $csvService = new CsvService();
         $i18n = $csvService->searchKey($file, $i18n_key, $module_name);
-
-//        echo "<pre>i18n[1] = " . print_r($i18n[1], true) . "</pre>\n";
-//        echo "<pre>i18n_value = " . print_r($i18n_value, true) . "</pre>\n";
         return ($i18n[1] != $i18n_value);
     }
 
