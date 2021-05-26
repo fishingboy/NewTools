@@ -47,7 +47,7 @@ class I18nTest extends TestCase
         echo "<pre>response = " . print_r($response, true) . "</pre>\n";
         $this->assertIsArray($response);
         $this->assertArrayHasKey('raw_data', $response);
-        $this->assertArrayHasKey('en_us', $response['i18n'][0]);
+        $this->assertArrayHasKey('i18n_key', $response['i18n'][0]);
         $this->assertArrayHasKey('th_th', $response['i18n'][0]);
     }
 
@@ -423,7 +423,7 @@ This complete solution is suitable for applications such as member identificatio
     {
         $i18nService = new I18nService();
         $i18n = [
-            "en_us" => "Hello",
+            "i18n_key" => "Hello",
             "zh_hant_tw" => "哈囉",
         ];
         $code = "zh_hant_tw";
@@ -435,7 +435,7 @@ This complete solution is suitable for applications such as member identificatio
     {
         $i18nService = new I18nService();
         $i18n = [
-            "en_us" => 'No results for "{query}"',
+            "i18n_key" => 'No results for "{query}"',
             "zh_hant_tw" => '沒有此項目的結果："{query}"',
         ];
         $code = "zh_hant_tw";

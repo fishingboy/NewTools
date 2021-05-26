@@ -177,7 +177,7 @@ class CsvService
             }
         }
 
-        echo "<pre>files = " . print_r($files, true) . "</pre>\n";
+//        echo "<pre>files = " . print_r($files, true) . "</pre>\n";
 
         // 計算是否有重覆
         $count = 0;

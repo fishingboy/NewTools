@@ -165,9 +165,9 @@ class I18nService
      */
     public function getWriteLine($i18n, $code): string
     {
-        $en_us = $this->convertCsvDoubleQuotes($i18n['en_us']);
+        $i18n_key = $this->convertCsvDoubleQuotes($i18n['i18n_key']);
         $i18n = $this->convertCsvDoubleQuotes($i18n[$code]);
-        return "\"{$en_us}\",\"{$i18n}\",,";
+        return "\"{$i18n_key}\",\"{$i18n}\",,";
     }
 
     /**
@@ -178,12 +178,10 @@ class I18nService
      */
     public function getWriteData($i18n, $code): array
     {
-//        $en_us = $this->convertCsvDoubleQuotes($i18n['en_us']);
-//        $i18n = $this->convertCsvDoubleQuotes($i18n[$code]);
         $module = $i18n['Module'] ?? "";
         $module_name = $i18n['Module Name'] ?? "";
         return [
-            $i18n['en_us'],
+            $i18n['i18n_key'],
             $i18n[$code],
             $module,
             $module_name,
@@ -194,7 +192,7 @@ class I18nService
     {
         return str_replace('"', '""', $str);
     }
-    
+
     /**
      * 寫入 i18n 檔案
      * @param array $i18n_array
@@ -205,11 +203,11 @@ class I18nService
     public function writeFiles(array $i18n_array, string $site): bool
     {
         foreach ($i18n_array as $i18n) {
-            $i18n_key = $i18n['en_us'];
+            $i18n_key = $i18n['i18n_key'];
             $module_name = $i18n['Module Name'] ?? "";
             echo "\ni18n key : `$i18n_key`, module_name=`$module_name`\n";
             foreach ($i18n as $code => $lang) {
-                if (in_array($code, ["en_us", 'Module', "Module Name"])) {
+                if (in_array($code, ["i18n_key", 'Module', "Module Name"])) {
                     continue;
                 }
 
@@ -262,7 +260,7 @@ class I18nService
      */
     public function getWriteRow($i18n, string $code): array
     {
-        $row[] = $i18n['en_us'];
+        $row[] = $i18n['i18n_key'];
         $row[] = $i18n[$code];
         $row[] = "";
         $row[] = "";
