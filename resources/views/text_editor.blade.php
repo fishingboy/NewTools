@@ -23,13 +23,14 @@
 <div class="base">
     <h1>text editor</h1>
     <form action="/">
-        <input type="hidden" name="method" value="json_decode">
         <div class="form-group">
             <textarea class="form-control" name="input" id="" cols="30" rows="10">{{ $input }}</textarea>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary">Json Beautiful</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_JSON_PRETTY }}" class="btn btn-primary">Json Beautiful</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLENCODE }}" class="btn btn-primary">Url Encode</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLDECODE }}" class="btn btn-primary">Url Decode</button>
         </div>
 
         <div class="form-group">
