@@ -34,7 +34,8 @@ class I18nService
      */
     public function getCsv(string $csv_file): string
     {
-        return Storage::get($csv_file);
+//        return Storage::get($csv_file);
+        return Storage::get("i18n/{$csv_file}");
     }
 
     /**
@@ -49,7 +50,7 @@ class I18nService
             $fp = fopen($csv_file, "r");
         } else {
             // 相對路徑
-            $fp = fopen(storage_path("app/{$csv_file}"), "r");
+            $fp = fopen(storage_path("app/i18n/{$csv_file}"), "r");
         }
         $raw_data = [];
         $i18n = [];

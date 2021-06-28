@@ -19,7 +19,7 @@ class I18nTest extends TestCase
      */
     public function test_getCSV()
     {
-        $response = Storage::get("20210324-SW-QVR-AI-Pack-i18n.csv");
+        $response = Storage::get("i18n/20210324-SW-QVR-AI-Pack-i18n.csv");
         echo "<pre>response = " . print_r($response, true) . "</pre>\n";
         $this->assertIsString($response);
     }
