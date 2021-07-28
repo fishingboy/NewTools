@@ -157,7 +157,7 @@ class CsvService
         while ($line = fgets($fp)) {
             // 符合 key 的那行不寫入
             if ($this->isMatchKey($line, $key) && $this->isMatchModuleName($line, $module_name)) {
-                echo "i18n key 刪除 [file:$file] [module_name:$module_name]\n";
+                echo "i18n key 刪除 [file:$file] [module_name:$module_name]\n$line\n";
                 continue;
             }
             $new_content .= $line;
@@ -282,7 +282,9 @@ class CsvService
     private function isMatchModuleName(string $line, $module_name): bool
     {
         $data = array_reverse(str_getcsv($line));
-        if ($module_name) {
+        if ($module_name == "all") {
+            return true;
+        } else if ($module_name) {
             if ($data[0] == $module_name) {
                 return true;
             }

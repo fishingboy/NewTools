@@ -353,4 +353,77 @@ class I18nService
                 return "/mnt/c/Users/Leo Kuo/Code/software-store";
         }
     }
+
+    /**
+     * 刪除 i18n key
+     * @param string $i18n_key
+     * @param string $site
+     * @param string $module
+     * @return bool
+     */
+    public function deleteKey(string $i18n_key, string $site, string $module = "all"): bool
+    {
+        $codes = $this->getI18nCodes($site);
+        foreach ($codes as $code) {
+            $file = $this->getFilePath($code, $site);
+            $origin_file = $this->getOriginFilePath($code, $site);
+            $this->csvService->deleteKey($file, $i18n_key, $module);
+            $this->csvService->deleteKey($origin_file, $i18n_key, $module);
+        }
+        return true;
+    }
+
+    /**
+     * 取得電商站的 i18n code
+     * @param string $site
+     * @return array
+     */
+    public function getI18nCodes(string $site): array
+    {
+        switch ($site) {
+            case self::SITE_SW:
+                return [
+                    "cs_cz",
+                    "da_dk",
+                    "de_de",
+                    "el_gr",
+                    "en_us",
+                    "es_es",
+                    "fi_fi",
+                    "fr_fr",
+                    "hu_hu",
+                    "it_it",
+                    "ja_jp",
+                    "ko_kr",
+                    "nb_no",
+                    "nl_nl",
+                    "pl_pl",
+                    "pt_br",
+                    "ru_ru",
+                    "sv_se",
+                    "th_th",
+                    "tr_tr",
+                    "zh_hans_cn",
+                    "zh_hant_tw",
+                    "ro_ro",
+                ];
+
+            case self::SITE_EU:
+                return [
+                    "cs_cz",
+                    "da_dk",
+                    "de_de",
+                    "es_es",
+                    "fi_fi",
+                    "fr_fr",
+                    "hu_hu",
+                    "it_it",
+                    "nl_nl",
+                    "pl_pl",
+                    "pt_br",
+                    "sv_se",
+                    "ro_ro",
+                ];
+        }
+    }
 }
