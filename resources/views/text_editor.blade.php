@@ -22,7 +22,8 @@
 <body>
 <div class="base">
     <h1>text editor</h1>
-    <form action="/">
+    <form action="/" method='post'>
+        {{ csrf_field() }}
         <div class="form-group">
             <textarea class="form-control" name="input" id="" cols="30" rows="10">{{ $input }}</textarea>
         </div>
@@ -31,6 +32,8 @@
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_JSON_PRETTY }}" class="btn btn-primary">Json Beautiful</button>
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLENCODE }}" class="btn btn-primary">Url Encode</button>
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLDECODE }}" class="btn btn-primary">Url Decode</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_BASE64ENCODE }}" class="btn btn-primary">Base64 Encode</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_BASE64DECODE }}" class="btn btn-primary">Base64 Decode</button>
         </div>
 
         <div class="form-group">

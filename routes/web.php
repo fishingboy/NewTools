@@ -20,5 +20,5 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-Route::get('/', [App\Http\Controllers\TextEditor::class, 'index'])->name('text_editor');
+Route::any('/', [App\Http\Controllers\TextEditor::class, 'index'])->name('text_editor');
 Route::any('test', [App\Http\Controllers\Test::class, 'index'])->name('test');
