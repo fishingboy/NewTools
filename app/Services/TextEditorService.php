@@ -44,7 +44,8 @@ class TextEditorService
      */
     public function doJsonPretty($input)
     {
-        $output = json_encode(json_decode($input), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $data = json_decode($input, true);
+        $output = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         return $output;
     }
 
