@@ -5,6 +5,7 @@ namespace App\Services;
 class TextEditorService
 {
     const ACTION_JSON_PRETTY = "json_pretty";
+    const ACTION_JSON_DECODE = "json_decode";
     const ACTION_URLENCODE = "urlencode";
     const ACTION_URLDECODE = "urldecode";
     const ACTION_BASE64ENCODE = "base64encode";
@@ -20,6 +21,9 @@ class TextEditorService
         switch ($action) {
             case self::ACTION_URLENCODE:
                 $output = $this->doUrlEncode($input);
+                break;
+            case self::ACTION_JSON_DECODE:
+                $output = $this->doJsonDecode($input);
                 break;
             case self::ACTION_URLDECODE:
                 $output = $this->doUrlDecode($input);
@@ -67,5 +71,10 @@ class TextEditorService
     private function doBase64Decode($str)
     {
         return base64_decode($str);
+    }
+
+    private function doJsonDecode($input)
+    {
+        return var_export(json_decode($input), true);
     }
 }

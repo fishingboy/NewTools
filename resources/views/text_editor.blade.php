@@ -30,6 +30,7 @@
 
         <div class="form-group">
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_JSON_PRETTY }}" class="btn btn-primary">Json Beautiful</button>
+            <button name="action" value="{{ \App\Services\TextEditorService::ACTION_JSON_DECODE }}" class="btn btn-primary">Json Decode</button>
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLENCODE }}" class="btn btn-primary">Url Encode</button>
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_URLDECODE }}" class="btn btn-primary">Url Decode</button>
             <button name="action" value="{{ \App\Services\TextEditorService::ACTION_BASE64ENCODE }}" class="btn btn-primary">Base64 Encode</button>
