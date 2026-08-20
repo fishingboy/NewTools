@@ -28,10 +28,10 @@ class TextEditorService
             case self::ACTION_URLDECODE:
                 $output = $this->doUrlDecode($input);
                 break;
-            case self::ACTION_BASE64DECODE:
+            case self::ACTION_BASE64ENCODE:
                 $output = $this->doBase64Encode($input);
                 break;
-            case self::ACTION_BASE64ENCODE:
+            case self::ACTION_BASE64DECODE:
                 $output = $this->doBase64Decode($input);
                 break;
             case self::ACTION_JSON_PRETTY:
