@@ -1,74 +1,78 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
+name: newtools
+
 services:
-    laravel.test:
+    app:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.0
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.0/app
+            context: .
+            dockerfile: docker/php/Dockerfile
+        image: newtools/app:8.0
+        container_name: newtools-app
+        restart: unless-stopped
         ports:
-            - '${APP_PORT:-80}:80'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
+            - '${APP_PORT:-6666}:80'
         volumes:
             - '.:/var/www/html'
-        networks:
-            - sail
         depends_on:
-            - mysql
-            - redis
-            # - selenium
-    # selenium:
-    #     image: 'selenium/standalone-chrome'
-    #     volumes:
-    #         - '/dev/shm:/dev/shm'
-    #     networks:
-    #         - sail
-    #     depends_on:
-    #         - laravel.test
+            mysql:
+                condition: service_healthy
+            redis:
+                condition: service_started
+        networks:
+            - newtools
+
     mysql:
         image: 'mysql:8.0'
+        container_name: newtools-mysql
+        restart: unless-stopped
         ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
+            - '${FORWARD_DB_PORT:-13306}:3306'
         environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_DATABASE: '${DB_DATABASE:-newtools}'
+            MYSQL_USER: '${DB_USERNAME:-newtools}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
-            - 'sailmysql:/var/lib/mysql'
+            - 'newtools-mysql:/var/lib/mysql'
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-p${DB_PASSWORD:-secret}']
+            interval: 5s
+            timeout: 5s
+            retries: 20
         networks:
-            - sail
+            - newtools
+
     redis:
         image: 'redis:alpine'
+        container_name: newtools-redis
+        restart: unless-stopped
         ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
+            - '${FORWARD_REDIS_PORT:-16379}:6379'
         volumes:
-            - 'sailredis:/data'
+            - 'newtools-redis:/data'
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            timeout: 5s
+            retries: 20
         networks:
-            - sail
-    # memcached:
-    #     image: 'memcached:alpine'
-    #     ports:
-    #         - '11211:11211'
-    #     networks:
-    #         - sail
-    mailhog:
-        image: 'mailhog/mailhog:latest'
+            - newtools
+
+    # Mailpit：攔截所有寄出的信，用 Web UI 看信（相容 MailHog 的 1025 / 8025）
+    mailpit:
+        image: 'axllent/mailpit:latest'
+        container_name: newtools-mailpit
+        restart: unless-stopped
         ports:
-            - 1025:1025
-            - 8025:8025
+            - '${FORWARD_MAILPIT_PORT:-8025}:8025'
         networks:
-            - sail
+            - newtools
+
 networks:
-    sail:
+    newtools:
         driver: bridge
+
 volumes:
-    sailmysql:
+    newtools-mysql:
         driver: local
-    sailredis:
+    newtools-redis:
         driver: local

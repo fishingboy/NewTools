@@ -1,0 +1,240 @@
+version: '3'
+
+# NewTools 本機開發環境（Docker Compose）
+# 用法： task            → 列出所有指令
+#        task install    → 第一次建置
+#        task start      → 啟動
+#        task stop       → 停止
+
+vars:
+  DC: docker compose
+  SVC: app
+  # 在容器內以 www-data 身分執行，避免產生 root 擁有的檔案
+  EXEC: docker compose exec -u www-data app
+  EXEC_ROOT: docker compose exec app
+
+tasks:
+  default:
+    desc: 列出所有可用指令
+    cmds:
+      - task --list
+    silent: true
+
+  # ---------------------------------------------------------------- 生命週期
+
+  install:
+    desc: 第一次建置環境（.env → build → up → composer install → key → migrate）
+    cmds:
+      - task: env
+      - task: build
+      - task: up
+      - task: permissions
+      - task: composer-install
+      - task: key
+      - task: migrate
+      - task: info
+
+  start:
+    desc: 啟動所有容器
+    cmds:
+      - '{{.DC}} up -d'
+      - task: info
+
+  stop:
+    desc: 停止並移除容器（資料保留）
+    cmds:
+      - '{{.DC}} down'
+
+  restart:
+    desc: 重新啟動容器（不重建 image）
+    cmds:
+      - task: stop
+      - task: start
+
+  rebuild:
+    desc: 重建 image（--no-cache）並重新啟動，之後跑 composer install
+    cmds:
+      - '{{.DC}} down'
+      - '{{.DC}} build --no-cache'
+      - '{{.DC}} up -d'
+      - task: permissions
+      - task: composer-install
+      - task: info
+
+  build:
+    desc: 建置 image（有 cache）
+    cmds:
+      - '{{.DC}} build'
+
+  up:
+    desc: 背景啟動容器並等待健康檢查通過
+    cmds:
+      - '{{.DC}} up -d --wait'
+
+  reset:
+    desc: '⚠️  砍掉容器與資料 volume 後完整重建（資料庫資料會全部消失）'
+    prompt: 這會刪除 MySQL / Redis 的資料 volume，確定要繼續嗎？
+    cmds:
+      - '{{.DC}} down -v'
+      - task: build
+      - task: up
+      - task: permissions
+      - task: composer-install
+      - task: migrate
+      - task: info
+
+  # ---------------------------------------------------------------- 觀察
+
+  ps:
+    desc: 顯示容器狀態
+    cmds:
+      - '{{.DC}} ps'
+
+  logs:
+    desc: 追蹤容器 log（task logs -- mysql 可指定服務）
+    cmds:
+      - '{{.DC}} logs -f --tail=100 {{.CLI_ARGS}}'
+
+  info:
+    desc: 顯示各服務的存取位址
+    silent: true
+    cmds:
+      - |
+        port() { {{.DC}} port "$1" "$2" 2>/dev/null | tail -1 | sed 's/.*://' || true; }
+        echo ""
+        echo "  App      → http://localhost:$(port app 80)"
+        echo "  Mailpit  → http://localhost:$(port mailpit 8025)"
+        echo "  MySQL    → 127.0.0.1:$(port mysql 3306)  (newtools / secret)"
+        echo "  Redis    → 127.0.0.1:$(port redis 6379)"
+        echo ""
+
+  # ---------------------------------------------------------------- 進容器
+
+  shell:
+    desc: 進入 app 容器（www-data）
+    interactive: true
+    cmds:
+      - '{{.EXEC}} bash'
+
+  root-shell:
+    desc: 進入 app 容器（root）
+    interactive: true
+    cmds:
+      - '{{.EXEC_ROOT}} bash'
+
+  mysql:
+    desc: 進入 MySQL client
+    interactive: true
+    cmds:
+      - '{{.DC}} exec mysql mysql -unewtools -psecret newtools'
+
+  # ---------------------------------------------------------------- 常用工具
+
+  artisan:
+    desc: 執行 artisan（例：task artisan -- route:list）
+    interactive: true
+    cmds:
+      - '{{.EXEC}} php artisan {{.CLI_ARGS}}'
+
+  composer:
+    desc: 執行 composer（例：task composer -- require foo/bar）
+    cmds:
+      - '{{.EXEC}} composer {{.CLI_ARGS}}'
+
+  composer-install:
+    desc: 安裝 PHP 相依套件
+    cmds:
+      - '{{.EXEC}} composer install --no-interaction --prefer-dist'
+
+  tinker:
+    desc: 開啟 tinker
+    interactive: true
+    cmds:
+      - '{{.EXEC}} php artisan tinker'
+
+  test:
+    desc: 執行 PHPUnit 測試
+    cmds:
+      - '{{.EXEC}} php artisan test {{.CLI_ARGS}}'
+
+  # ---------------------------------------------------------------- 資料庫
+  # 注意：artisan migrate 不會遞迴讀 database/migrations/alex/，
+  # 所以 alex 目錄一律要另外用 --path 指定。
+
+  migrate:
+    desc: 執行全部 migration（database/migrations 與 alex 子目錄）
+    cmds:
+      - '{{.EXEC}} php artisan migrate --force'
+      - '{{.EXEC}} php artisan migrate --path=database/migrations/alex --force'
+
+  migrate:fresh:
+    desc: 清空資料庫後重跑全部 migration
+    cmds:
+      - '{{.EXEC}} php artisan migrate:fresh --force'
+      - '{{.EXEC}} php artisan migrate --path=database/migrations/alex --force'
+
+  migrate:rollback:
+    desc: 回退上一批 migration
+    cmds:
+      - '{{.EXEC}} php artisan migrate:rollback --force'
+
+  db:refresh:
+    desc: 重建 alex 資料表（migrate:refresh --path=database/migrations/alex）
+    cmds:
+      - '{{.EXEC}} php artisan migrate:refresh --path=database/migrations/alex --force'
+
+  db:seed:
+    desc: 重灌假資料
+    cmds:
+      - echo '>>> 重灌假資料 ..... nothing to do'
+
+  db:rebuild:
+    desc: 重建 alex 資料表並重灌假資料
+    cmds:
+      - task: db:refresh
+      - task: db:seed
+
+  # ---------------------------------------------------------------- Git
+
+  git:pull:
+    desc: 從遠端 rebase 拉取目前分支
+    cmds:
+      - |
+        branch=$(git branch --show-current)
+        echo ">>> Pull Code on Current branch [$branch]"
+        git pull origin "$branch" --rebase
+
+  git:push:
+    desc: 推送目前分支到遠端
+    cmds:
+      - |
+        branch=$(git branch --show-current)
+        echo ">>> Current branch [$branch] Pushing Code"
+        git push origin "$branch"
+
+  # ---------------------------------------------------------------- 內部步驟
+
+  env:
+    desc: 若 .env 不存在，從 .env.docker 複製一份
+    status:
+      - test -f .env
+    cmds:
+      - cp .env.docker .env
+      - echo '>>> 已建立 .env（來源 .env.docker）'
+
+  key:
+    desc: 產生 APP_KEY
+    cmds:
+      - '{{.EXEC}} php artisan key:generate'
+
+  permissions:
+    desc: 調整 storage / bootstrap cache 權限
+    cmds:
+      - '{{.EXEC_ROOT}} chown -R www-data:www-data storage bootstrap/cache'
+      # 大寫 X：只給目錄加 x，不會把一般檔案標成可執行（避免污染 git 的 file mode）
+      - '{{.EXEC_ROOT}} chmod -R ug+rwX storage bootstrap/cache'
+
+  cache-clear:
+    desc: 清掉 config / route / view 快取
+    cmds:
+      - '{{.EXEC}} php artisan optimize:clear'
