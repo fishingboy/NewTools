@@ -46,7 +46,7 @@ task install
 
 | 服務 | 位址 | 帳密 |
 | --- | --- | --- |
-| App | <http://localhost:6666> | — |
+| App | <http://localhost:7777> | — |
 | Mailpit（收信介面） | <http://localhost:8025> | — |
 | MySQL | `127.0.0.1:13306` | `newtools` / `secret` |
 | Redis | `127.0.0.1:16379` | — |
@@ -127,7 +127,7 @@ Port 可以在 `.env` 裡改 `APP_PORT`、`FORWARD_DB_PORT`、`FORWARD_REDIS_POR
 
 ```
 docker-compose.yml
-├── app      php:8.0-apache + Composer  → localhost:6666
+├── app      php:8.0-apache + Composer  → localhost:7777
 ├── mysql    mysql:8.0                  → localhost:13306
 ├── redis    redis:alpine               → localhost:16379
 └── mailpit  攔截所有寄出的信            → localhost:8025
@@ -156,8 +156,14 @@ docker-compose.yml
 
 ## 疑難排解
 
-**Port 6666 被佔用**
+**Port 7777 被佔用**
 改 `.env` 的 `APP_PORT`，然後 `task restart`。
+
+**瀏覽器說「此網址已被限制」/ `ERR_UNSAFE_PORT`**
+你把 `APP_PORT` 改到瀏覽器的封鎖清單上了。Firefox 與 Chromium 都會擋掉
+一批「通常不用於網頁瀏覽」的 port，常見的有 6665–6669、6697（IRC）、
+6000（X11）、25（SMTP）、587、465 等。換一個沒被擋的 port 即可，
+例如 7777、8666、16666。注意 1024 以下是特權 port，也盡量避開。
 
 **改了 `docker/php/` 底下的檔案沒生效**
 那些是 build 進 image 的，要 `task rebuild`。
